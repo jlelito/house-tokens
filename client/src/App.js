@@ -164,12 +164,15 @@ class App extends Component {
       
         <h1 className="my-5">House Tokens!</h1>
         
-        <p>Current Account: <img
-                              className='ml-2'
-                              width='30'
-                              height='30'
-                              src={`data:image/png;base64,${new Identicon(this.state.account, 30).toString()}`}
-                          /> {this.state.account}</p>
+        <p>Current Account: 
+          <img
+              className='ml-2'
+              width='30'
+              height='30'
+              src={`data:image/png;base64,${new Identicon(this.state.account, 30).toString()}`}
+          /> 
+          {this.state.account}              
+        </p>
 
         {this.state.account == this.state.admin ? (
               <>
@@ -191,69 +194,70 @@ class App extends Component {
                             
                         }}>
                         
-                        <div className="input-group form-row">
-                          <div className="form-group col-md-6">
-                          <label>Address of House</label>
-                            <input
-                            type="text"
-                            ref={(address) => { this.address = address }}
-                            className="form-control form-control-lg"
-                            placeholder="221 First Street..."
-                            required />
-                          </div>
-                          </div>
-                        
-                        <div className="input-group form-row">
-                        <div className="form-group col-sm-6">
-                          <label className="text-center">Square Feet</label>
-                            <input
-                            type="number"
-                            ref={(squareFeet) => { this.squareFeet = squareFeet }}
-                            className="form-control form-control-lg"
-                            placeholder="0"
-                            required /> 
+                        <div className="input-group row justify-content-center">
+                            <div className="form-group col-md-6">
+                              <label>Address of House</label>
+                                <input
+                                type="text"
+                                ref={(address) => { this.address = address }}
+                                className="form-control form-control-lg"
+                                placeholder="221 First Street..."
+                                required />
+                            </div>
                         </div>
                         
+                        <div className="row justify-content-center">
+                          <div className="form-group col-sm-3">
+                            <label className="text-center">Square Feet</label>
+                              <input
+                              type="number"
+                              ref={(squareFeet) => { this.squareFeet = squareFeet }}
+                              className="form-control form-control-lg"
+                              placeholder="0"
+                              required /> 
+                          </div>
+                          
 
-                        
-                          <div className="form-group col-sm-6">
-                          <label className="text-center">Price</label>
-                            <input
-                            type="number"
-                            step=".01"
-                            ref={(price) => { this.price = price }}
-                            className="form-control form-control-lg"
-                            placeholder="0 ETH"
-                            required /> 
+                          
+                            <div className="form-group col-sm-3">
+                              <label className="text-center">Price</label>
+                                <input
+                                type="number"
+                                step=".01"
+                                ref={(price) => { this.price = price }}
+                                className="form-control form-control-lg"
+                                placeholder="0 ETH"
+                                required /> 
+                            </div>
+                          
+                        </div>
+                          
+
+                          <div className="mb-4 row justify-content-center">
+                            <div className="col-sm-3">
+                              <label className="text-center">Number of Bedrooms</label>
+                                <input
+                                type="number"
+                                ref={(bedrooms) => { this.bedrooms = bedrooms }}
+                                className="form-control form-control-lg"
+                                placeholder="0"
+                                required /> 
+                            </div>
+                            
+
+                            
+                              <div className="col-sm-3">
+                                <label className="text-center">Number of Bathrooms</label>
+                                  <input
+                                  type="number"
+                                  ref={(bathrooms) => { this.bathrooms = bathrooms }}
+                                  className="form-control form-control-lg"
+                                  placeholder="0"
+                                  required /> 
+                              </div>
+                            
                           </div>
                         
-                        
-                        
-
-                        
-                        <div className="form-group col-sm-6">
-                          <label className="text-center">Number of Bedrooms</label>
-                            <input
-                            type="number"
-                            ref={(bedrooms) => { this.bedrooms = bedrooms }}
-                            className="form-control form-control-lg"
-                            placeholder="0"
-                            required /> 
-                          </div>
-                        
-
-                        <div className="input-group mb-4">
-                        <div className="form-group col-sm-6">
-                          <label className="text-center">Number of Bathrooms</label>
-                            <input
-                            type="number"
-                            ref={(bathrooms) => { this.bathrooms = bathrooms }}
-                            className="form-control form-control-lg"
-                            placeholder="0"
-                            required /> 
-                        </div>
-                        </div>
-                        </div>
                         
                             
                         
@@ -315,20 +319,19 @@ class App extends Component {
               &nbsp;
               &nbsp;
               &nbsp;
+
               <Main 
                 houseItems = {this.state.houseTokenList}
                 buyHouse = {this.buyHouse}
                 account={this.state.account}
-              
               />
               
               <HouseTable
                 houseTokenList={this.state.houseTokenList}
                 account={this.state.account}
-                />
+              />
               
-              
-  
+
             </div>
           
       </div>
