@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import HouseToken from "./contracts/House.json";
-import Web3 from 'web3'
 import Main from './Main'
 import Navbar from './Navbar'
 import "./App.css";
 import Identicon from 'identicon.js';
 import smile from './src_images/smiley.jpg'
+import loadWeb3 from './utils.js';
 
 
 
@@ -13,7 +13,7 @@ import smile from './src_images/smiley.jpg'
 class App extends Component {
   
   async componentWillMount() {
-    await this.loadWeb3()
+    await loadWeb3()
     await this.loadBlockchainData()
     await this.updateHouses()
   }
@@ -56,18 +56,18 @@ class App extends Component {
   }
   
   //Loads Web3 to detect MetaMask
-  async loadWeb3() {
-      if (window.ethereum) {
-        window.web3 = new Web3(window.ethereum)
-        await window.ethereum.enable()
-      }
-      else if (window.web3) {
-        window.web3 = new Web3(window.web3.currentProvider)
-      }
-      else {
-        window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-      }
-    }
+  // async loadWeb3() {
+  //     if (window.ethereum) {
+  //       window.web3 = new Web3(window.ethereum)
+  //       await window.ethereum.enable()
+  //     }
+  //     else if (window.web3) {
+  //       window.web3 = new Web3(window.web3.currentProvider)
+  //     }
+  //     else {
+  //       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+  //     }
+  //   }
 
     
 
