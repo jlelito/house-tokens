@@ -9,7 +9,7 @@ contract House is ERC721Full {
     address payable owner;
     string homeAddress;
     uint sqFeet;
-    uint price;
+    uint256 price;
     uint bedrooms;
     uint bathrooms;
   }
@@ -19,12 +19,10 @@ contract House is ERC721Full {
     address owner,
     string homeAddress,
     uint sqFeet,
-    uint price,
+    uint256 price,
     uint bedrooms,
     uint bathrooms
   );
-
-
 
 
   mapping(uint => House) public houses;
@@ -34,16 +32,9 @@ contract House is ERC721Full {
 
   constructor() ERC721Full("House", "HOUSE") public {
       admin = msg.sender;
-      mint("Medici Court", 400, 5000000000000000000, 4, 3);
-      mint("Hatchet Creek Ct", 700, 10000000000000, 2, 1);
-      mint("Bikini Bottom", 2100, 8000000000000000000, 1, 1);
-      mint("ECU", 1500, 9000000000000000000, 1, 1);
-      mint("A Small House", 100, 9000000000000000000, 1, 1);
-      mint("Mansion", 50000, 9000000000000000000, 1, 1);
-      
   }
 
-  function mint(string memory _homeAddress, uint _sqFeet, uint _price, uint _bedrooms, uint _bathrooms) public {
+  function mint(string memory _homeAddress, uint _sqFeet, uint256 _price, uint _bedrooms, uint _bathrooms) public {
     require(!_houseExists[nextId]);
     require(msg.sender == admin, 'Must be Admin to mint House Tokens');
     houses[nextId] = House(nextId, msg.sender, _homeAddress, _sqFeet, _price, _bedrooms, _bathrooms);
@@ -75,7 +66,6 @@ contract House is ERC721Full {
     _transferFrom(_owner, msg.sender, _id);
     //Change ownership of house
     houses[_id].owner = msg.sender;
-    
     //Emit the image tipped event
     emit boughtHouse(_id, _house.owner, _house.homeAddress, _house.sqFeet, _house.price, _house.bedrooms, _house.bathrooms);
 
