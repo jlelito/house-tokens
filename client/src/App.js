@@ -6,6 +6,7 @@ import "./App.css";
 import Identicon from 'identicon.js';
 import smile from './src_images/smiley.jpg'
 import loadWeb3 from './utils.js';
+import HouseTable from "./HouseTable";
 
 
 
@@ -62,21 +63,22 @@ class App extends Component {
   async updateHouses() {
     
     try{
-    let length = await this.state.houseToken.methods.nextId().call()
-    
-    const houses = []
-    for(let i=1; i<length; i++){
-      let currentHouse = await this.state.houseToken.methods.houses(i).call()
-      houses.push(currentHouse)
-    }
-    
-    this.setState({houseTokenList: houses})
-    this.setState({loading: false})
 
-    
+        let length = await this.state.houseToken.methods.nextId().call()
+        
+        const houses = []
+        for(let i=1; i<length; i++){
+          let currentHouse = await this.state.houseToken.methods.houses(i).call()
+          houses.push(currentHouse)
+        }
+        
+        this.setState({houseTokenList: houses})
+        this.setState({loading: false})
+
   } catch(e){
-    this.setState({loading: true})
-    window.alert('Cannot update houses! Error:', e.message)
+
+        this.setState({loading: true})
+        window.alert('Cannot update houses! Error:', e.message)
     
   }
     
@@ -88,11 +90,9 @@ class App extends Component {
       try{
           
           this.state.houseToken.methods.transferHouse(address, tokenId).send({ from: this.state.account }).on('transactionHash', (hash) => {
-          //Check if Transaction failed or not
-          console.log(hash)
           window.location.reload();
           
-              })
+            })
         } catch (e){
           window.alert(e)
       }
@@ -104,9 +104,6 @@ class App extends Component {
       let ethPrice = window.web3.utils.toWei(price, 'Ether')
       try{
       this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', (hash) => {
-        //Check if Transaction failed or not
-        console.log(hash)
-        
         window.location.reload();
         
       })
@@ -120,7 +117,6 @@ class App extends Component {
      buyHouse = (tokenId, housePrice) => {
       
       this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
-        //Check if Transaction failed or not
         
         window.location.reload();
       })
@@ -269,54 +265,7 @@ class App extends Component {
               
               ) : null}
         
-        <div className="row justify-content-center">
-          <div className="col-auto">
-            <table className="table table-striped table-hover mt-5">
-              <caption>House Token Info</caption>
-                <thead className="thead-light">
-                  <tr>
-                    <th>Token Id</th>
-                    <th>Owner</th>
-                    <th>Address</th>
-                    <th>Square Feet</th>
-                    <th>Price</th>
-                    <th>Bedrooms</th>
-                    <th>Bathrooms</th>
-                    <th>Own House?</th>
-                  </tr>
-                </thead>
-              <tbody>
-                
-
-                {this.state.houseTokenList.map(house => (
-                  <tr key={house.houseID}>
-                    <td>{house.houseID}</td>
-                    <td>
-                      <img
-                          className='ml-2'
-                          width='30'
-                          height='30'
-                          src={`data:image/png;base64,${new Identicon(house.owner, 30).toString()}`}
-                      /> 
-                          {house.owner}
-                    </td>
-                    <td>{house.homeAddress}</td>
-                    <td>{house.sqFeet}</td>
-                    <td>{window.web3.utils.fromWei(house.price, 'Ether')} Ether</td>
-                    <td>{house.bedrooms}</td>
-                    <td>{house.bathrooms}</td>
-                    <td>{this.state.account != house.owner ? (
-                      <p className="text-danger">No</p>
-                    ) : <p className="text-success">Yes</p>}
-                    </td>
-                  </tr>
-
-                ))}
-
-              </tbody>
-            </table>
-          </div>
-          </div>
+        
           <div className="col">
             <form className="mb-3" onSubmit={(event) => {
                             event.preventDefault()
@@ -373,7 +322,10 @@ class App extends Component {
               
               />
               
-              
+              <HouseTable
+                houseTokenList={this.state.houseTokenList}
+                account={this.state.account}
+                />
               
               
   
