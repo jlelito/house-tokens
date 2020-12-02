@@ -3,11 +3,11 @@ import HouseToken from './contracts/House.json';
 import Main from './Main'
 import Navbar from './Navbar'
 import "./App.css";
-import Identicon from 'identicon.js';
 import smile from './src_images/smiley.jpg'
 import loadWeb3 from './utils.js';
-import HouseTable from './HouseTable';
 import MintHouse from './MintHouse.js';
+import ethlogo from './src_images/ETH.png';
+
 
 
 
@@ -152,9 +152,9 @@ class App extends Component {
     
 
     window.ethereum.on('accountsChanged', accounts => {
-      console.log(accounts)
-      this.setState({account: accounts[0]})
       window.location.reload();
+      this.setState({account: accounts[0]})
+      
     });
 
     return (
@@ -166,16 +166,8 @@ class App extends Component {
       
         <h1 className="my-5">House Tokens!</h1>
         
-        <p>Current Account: 
-          <img
-              className='ml-2'
-              width='30'
-              height='30'
-              src={`data:image/png;base64,${new Identicon(this.state.account, 30).toString()}`}
-          /> 
-          {this.state.account}              
-        </p>
         
+
       <MintHouse
         account={this.state.account}
         admin={this.state.admin}
@@ -184,8 +176,9 @@ class App extends Component {
         
 
               
-        
-          <div className="col">
+        <div className="row justify-content-center">
+          <div className="col-sm-5">
+          <h2 className="mb-4">Send House Token</h2>
             <form className="mb-3" onSubmit={(event) => {
                             event.preventDefault()
                             let amount, targetAddress
@@ -194,60 +187,90 @@ class App extends Component {
                             this.sendTokens(amount, targetAddress)
 
                             
-                        }}>
-                        &nbsp;
-                        &nbsp;
-                        <h2 className="my-4">Send House Token</h2>
+              }}>
+                        
+                        
                         <div className="container">
-                        <div className="form-row justify-content-center">
-                          
-                        <div className="form-group mb-4 col-md-5">
-                          <label className="mx-2">Address</label>
-                            <input
-                            type="text"
-                            ref={(targetAddress) => { this.targetAddress = targetAddress }}
-                            className="form-control form-control-lg"
-                            placeholder="0x0...."
-                            required />
+                          <div className="row justify-content-center">
+                            <div className="form-group mb-4 col-8">
+                              <label className="mx-2">Address</label>
+                                <input
+                                type="text"
+                                ref={(targetAddress) => { this.targetAddress = targetAddress }}
+                                className="form-control form-control-lg"
+                                placeholder="0x0...."
+                                required />
+                            </div>
                             
+                            <div className="form-group mb-4 col-sm-3">
+                              <label className="mx-2">Token ID</label>
+                                <input
+                                type="number"
+                                ref={(inputAmount) => { this.inputAmount = inputAmount }}
+                                className="form-control form-control-lg"
+                                placeholder="0"
+                                required />
+                            </div>
+
+                          </div>
+
+                          <button type="submit" className="btn btn-primary btn-lg col-md-2" >
+                              Send!
+                          </button>
                         </div>
                         
-                        <div className="form-group mb-4 col-md-2">
-                          <label className="mx-2">House Token ID</label>
-                            <input
-                            type="number"
-                            ref={(inputAmount) => { this.inputAmount = inputAmount }}
-                            className="form-control form-control-lg"
-                            placeholder="0"
-                            required />
-                            
-                        </div>
-                        </div>
-                        </div>
                         
-                        <button type="submit" 
-                        className="btn btn-primary  btn-lg"
-                        
-                        >Send!</button>
               </form>
+          </div>
+          
+
+          <div className="col-lg-6 mr-4">
+          <h2 className="mb-4">Your Houses</h2>
+          <table className="table table-striped table-hover mt-1">
+            <caption>Owned Houses</caption>
+              <thead className="thead-light">
+                          <tr>
+                              <th>Token Id</th>
+                              <th>Address</th>
+                              <th>Square Feet</th>
+                              <th>Price</th>
+                              <th>Bedrooms</th>
+                              <th>Bathrooms</th>
+                          </tr>
+              </thead>
+              {this.state.houseTokenList.map(house => (
+                <tr className="justify-content-center" key={house.houseID}>
+                {this.state.account == house.owner ? (
+                        <>
+                            <td>{house.houseID}</td>
+                            <td>{house.homeAddress}</td>
+                            <td>{house.sqFeet}</td>
+                            <td>{window.web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} width='25' height='25'/> </td>
+                            <td>{house.bedrooms}</td>
+                            <td>{house.bathrooms}</td>
+                        </>
+                        
+                ) : null}
+                </tr>
+                  ))}
+                  
+            </table>
+          </div>
+          </div>
               &nbsp;
               &nbsp;
+              
               &nbsp;
               &nbsp;
+              <hr></hr>
+              
 
               <Main 
                 houseItems = {this.state.houseTokenList}
                 buyHouse = {this.buyHouse}
                 account={this.state.account}
               />
-              
-              <HouseTable
-                houseTokenList={this.state.houseTokenList}
-                account={this.state.account}
-              />
-              
 
-            </div>
           
       </div>
     );

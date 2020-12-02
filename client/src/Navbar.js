@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Identicon from 'identicon.js';
 import smile from './src_images/smiley.jpg'
+import coloreth from './src_images/eth-diamond-rainbow.png';
 
 class Navbar extends Component {
 
@@ -12,12 +13,10 @@ class Navbar extends Component {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img src={smile} width="30" height="30" className="d-inline-block align-top" alt="" />
+          <img src={coloreth} width="20" height="30" className="d-inline-block align-top mr-2" alt="rainbow eth logo" />
           House Tokens!
         </a>
-        <div className="text-center text-white">
-          Current House Tokens: {this.props.currentBalance}
-        </div>
+        
         <ul className="navbar-nav px-3">
           <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
             <small className="text-secondary">

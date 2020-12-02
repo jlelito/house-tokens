@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Identicon from 'identicon.js';
+import ethlogo from './src_images/ETH.png';
 
 
 
@@ -52,7 +53,7 @@ class Main extends Component {
                   <div className="row">
                   <div className="card mb-4 mx-4" key={key} >
                     <div className="card-header">
-                      <p>House Owner:</p>
+                      
                       <img
                         className='mr-2'
                         width='30'
@@ -64,7 +65,6 @@ class Main extends Component {
                     <ul id="houseList" className="list-group list-group-flush">
                       <li className="list-group-item">
                         <p className="text-center"><img src={this.chooseImage(house.sqFeet)} style={{ maxWidth: '350px', maxHeight: '150px'}}/></p>
-                        <p><b>House ID: {house.houseID}</b></p>
                         <p>{house.homeAddress}</p>
                         <p>Square Feet: {house.sqFeet} sq/feet</p>
                         <p>Bedrooms: {house.bedrooms}</p>
@@ -72,7 +72,7 @@ class Main extends Component {
                       </li>
                       <li key={key} className="list-group-item py-2">
                         <small className="float-left mt-1 text-muted">
-                          <b>Price: {window.web3.utils.fromWei(house.price, 'Ether')} Ether</b>
+                          <b>Price: {window.web3.utils.fromWei(house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25'/></b>
                         </small>
                         {house.owner == this.props.account ? <small className="float-right text-muted pt-0 mt-1">You own this house!</small> : (
                         <button
