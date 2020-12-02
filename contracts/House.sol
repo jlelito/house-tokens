@@ -35,7 +35,7 @@ contract House is ERC721Full {
   }
 
   function mint(string memory _homeAddress, uint _sqFeet, uint256 _price, uint _bedrooms, uint _bathrooms) public {
-    require(!_houseExists[nextId]);
+    require(!_houseExists[nextId], 'this house id already exists');
     require(msg.sender == admin, 'Must be Admin to mint House Tokens');
     houses[nextId] = House(nextId, msg.sender, _homeAddress, _sqFeet, _price, _bedrooms, _bathrooms);
     _mint(msg.sender, nextId);
@@ -44,10 +44,18 @@ contract House is ERC721Full {
   }
 
   function transferHouse(address payable to, uint houseID) public {
-    require(ownerOf(houseID) == msg.sender, 'you must own the house to transfer!');
+    require(ownerOf(houseID) == msg.sender, 'you must own the house');
     require(_houseExists[houseID], 'house does not exist!!');
     _transferFrom(msg.sender, to, houseID);
     houses[houseID].owner = to;
+  }
+
+  function changePrice(uint _id, uint newPrice) public {
+    require(ownerOf(_id) == msg.sender, 'you must own the house');
+    require(_houseExists[_id], 'house does not exist!!');
+    //Change the price of the house with associated id
+    houses[_id].price = newPrice;
+
   }
 
   function buyHouse(uint _id) public payable {
