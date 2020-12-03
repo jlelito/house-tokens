@@ -198,8 +198,7 @@ class App extends Component {
 
                             
               }}>
-                        
-                        
+                           
                         <div className="container">
                           <div className="row justify-content-center">
                             <div className="form-group mb-4 col-8">
@@ -232,53 +231,6 @@ class App extends Component {
                         
                         
               </form>
-
-              <h2>Change Price</h2>
-              <form className="mb-3" onSubmit={(event) => {
-                            event.preventDefault()
-                            let id, price
-                            id = this.inputAmount.value.toString()
-                            price = this.priceInput.value
-                            this.changePrice(id, price)
-
-                            
-              }}>
-                        
-                        
-                        <div className="container">
-                          <div className="row justify-content-center">
-                            <div className="form-group mb-4 col-sm-4">
-                              <label className="mx-2">Price</label>
-                                <input
-                                type="number"
-                                ref={(priceInput) => { this.priceInput = priceInput }}
-                                className="form-control form-control-lg"
-                                placeholder=".01 ETH"
-                                min="0"
-                                required />
-                            </div>
-                            
-                            <div className="form-group mb-4 col-sm-3">
-                              <label className="mx-2">Token ID</label>
-                                <input
-                                type="number"
-                                ref={(inputAmount) => { this.inputAmount = inputAmount }}
-                                className="form-control form-control-lg"
-                                placeholder="0"
-                                required />
-                            </div>
-
-                          </div>
-
-                          <button type="submit" className="btn btn-primary btn-lg col-md-4" >
-                              Change Price
-                          </button>
-                        </div>
-                        
-                        
-              </form>
-
-
           </div>
           
 
