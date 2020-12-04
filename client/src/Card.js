@@ -65,6 +65,7 @@ class Card extends Component {
                           <p>Bathrooms: {this.props.house.bathrooms}</p>
                         </li>
                         <li  className="list-group-item py-2">
+                            
                           <small className="float-left mt-1 text-muted">
                             <b>Price: {window.web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25'/></b>
                           </small>
@@ -72,25 +73,31 @@ class Card extends Component {
                           <>
   
                           
-                          <form onSubmit={(event) => {
+                          <form 
+                            className="float-right"
+                            onSubmit={(event) => {
                              event.preventDefault()
                              let newPrice
                              newPrice = this.inputAmount.value.toString()                         
                              this.props.changePrice(this.props.house.houseID, newPrice)
                             
                           }}>
-                            <div className="float-right mt-1">
-                                  <input
-                                  type="number"
-                                  ref={(inputAmount) => { this.inputAmount = inputAmount }}
-                                  className="form-control form-control-lg"
-                                  placeholder="0"
-                                  min="0"
-                                  required />
-  
-                              <button type="submit" className="btn btn-primary btn-sm" >
-                                  Change Price
-                              </button>
+                            <div className="input-group">
+                                
+                                    <input
+                                        type="number"
+                                        ref={(inputAmount) => { this.inputAmount = inputAmount }}
+                                        className="form-control form-control-sm"
+                                        placeholder="0"
+                                        min="0"
+                                        required 
+                                    />
+                                
+                                <span className="input-group-btn">
+                                    <button type="submit" className="btn btn-primary btn-sm" >
+                                        Change Price
+                                    </button>
+                                </span>
                             </div>
                           </form> 
   
@@ -98,7 +105,7 @@ class Card extends Component {
                           
                           : (
                           <button
-                            className="btn btn-primary btn-sm float-right pt-0"
+                            className="btn btn-primary btn-sm float-right pt-0 mt-1"
                             name={this.props.house.houseID}
                             onClick={(event) => {
                               event.preventDefault()
