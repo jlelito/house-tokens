@@ -119,9 +119,25 @@ class App extends Component {
       
       this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
         
-        window.location.reload();
+        this.state.houseToken.events.boughtHouse({}, async (error, event) => {
+            let result = event.returnValues.homeAddress
+            let price = event.returnValues.price
+            let oldOwner = event.returnValues.owner
+            price = window.web3.utils.fromWei(price, 'Ether')
+            window.alert('Bought House! \n\n' + 'Address: ' + result + '\nPrice: ' + price + ' ETH' + '\nBought From: ' + oldOwner)
+            window.location.reload()
+            
+            
+        })
+
+      }).on('error', (error) => {
+        window.alert('Error')
       })
+      
     }
+    
+  
+        
 
     changePrice = (tokenId, newPrice) => {
       console.log("Changing price!")
