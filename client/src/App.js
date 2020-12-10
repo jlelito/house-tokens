@@ -10,8 +10,6 @@ import ethlogo from './src_images/ETH.png';
 import Identicon from 'identicon.js';
 
 
-
-
 class App extends Component {
   
   async componentWillMount() {
@@ -20,8 +18,6 @@ class App extends Component {
     await this.updateHouses()
   }
 
-  
-  
 
   //Loads all the blockchain data
   async loadBlockchainData() {
@@ -76,12 +72,10 @@ class App extends Component {
         this.setState({houseTokenList: houses})
         this.setState({loading: false})
 
-  } catch(e){
-
-        this.setState({loading: true})
-        window.alert('Cannot update houses! Error:', e.message)
-    
-  }
+      } catch(e){
+          this.setState({loading: true})
+          window.alert('Cannot update houses! Error:', e.message)
+        }
     
 }
 
@@ -91,12 +85,23 @@ class App extends Component {
       try{
           
           this.state.houseToken.methods.transferHouse(address, tokenId).send({ from: this.state.account }).on('transactionHash', (hash) => {
-          window.location.reload();
           
-            })
+            this.state.houseToken.events.sentHouse({}, async (error, event) => {
+              let houseID = event.returnValues.id
+              let sentTo = event.returnValues.to
+              window.alert('Sent House! \n\n' + 'House ID: ' + houseID + '\nReceiptiant: ' + sentTo)
+              window.location.reload()
+              
+              
+          })
+          
+            }).on('error', (error) => {
+              window.alert('Error')
+          })
+
         } catch (e){
           window.alert(e)
-      }
+        }
     }
 
     //Mints House Tokens
@@ -108,15 +113,16 @@ class App extends Component {
         window.location.reload();
         
       })
-    } catch(e) {
-      window.alert(e)
-    }
+      } catch(e) {
+        window.alert(e)
+      }
+
     }
 
 
     //Buys house tokens from the card
      buyHouse = (tokenId, housePrice) => {
-      
+      try{
       this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
         
         this.state.houseToken.events.boughtHouse({}, async (error, event) => {
@@ -130,22 +136,36 @@ class App extends Component {
             
         })
 
-      }).on('error', (error) => {
-        window.alert('Error')
-      })
+          }).on('error', (error) => {
+            window.alert('Error')
+          })
+        }
+      catch(e) {
+        window.alert(e)
+      }
       
     }
     
   
-        
-
+    //Changes the price of a house
     changePrice = (tokenId, newPrice) => {
-      console.log("Changing price!")
-      console.log('Price Input:', newPrice)
+
       let ethPrice = window.web3.utils.toWei(newPrice, 'Ether')
       this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', (hash) => {
         
-        window.location.reload();
+        this.state.houseToken.events.changedPrice({}, async (error, event) => {
+          let targetID = event.returnValues.id
+          let oldPrice = event.returnValues.oldPrice
+          let newPrice = event.returnValues.newPrice
+          oldPrice = window.web3.utils.fromWei(oldPrice, 'Ether')
+          newPrice = window.web3.utils.fromWei(newPrice, 'Ether')
+          window.alert('Changed Price! \n\n' + 'House ID: ' + targetID + '\nOld Price: ' + oldPrice + ' ETH' + '\nNew Price: ' + newPrice + ' ETH')
+          window.location.reload()
+          
+          
+      })
+      
+      
       })
     }
 
@@ -217,7 +237,7 @@ class App extends Component {
                            
                         <div className="container">
                           <div className="row justify-content-center">
-                            <div className="form-group mb-4 col-8">
+                            <div className="form-group mb-4 col-9">
                               <label className="mx-2">Address</label>
                                 <input
                                 type="text"
@@ -228,7 +248,7 @@ class App extends Component {
                             </div>
                             
                             <div className="form-group mb-4 col-sm-3">
-                              <label className="mx-2">Token ID</label>
+                              <label className="mx-2">House ID</label>
                                 <input
                                 type="number"
                                 ref={(inputAmount) => { this.inputAmount = inputAmount }}
@@ -257,7 +277,7 @@ class App extends Component {
             <caption>Owned Houses</caption>
               <thead className="thead-light">
                           <tr>
-                              <th>Token Id</th>
+                              <th>House ID</th>
                               <th>Address</th>
                               <th>Square Feet</th>
                               <th>Price</th>

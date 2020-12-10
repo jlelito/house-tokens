@@ -14,15 +14,9 @@ contract House is ERC721Full {
     uint bathrooms;
   }
 
-  event boughtHouse (
-    uint houseID,
-    address owner,
-    string homeAddress,
-    uint sqFeet,
-    uint256 price,
-    uint bedrooms,
-    uint bathrooms
-  );
+  event boughtHouse(uint houseID, address owner, string homeAddress, uint sqFeet, uint256 price, uint bedrooms,uint bathrooms);
+  event sentHouse(uint id, address to);
+  event changedPrice(uint id, uint oldPrice, uint newPrice);
 
 
   mapping(uint => House) public houses;
@@ -48,14 +42,17 @@ contract House is ERC721Full {
     require(_houseExists[houseID], 'house does not exist!!');
     _transferFrom(msg.sender, to, houseID);
     houses[houseID].owner = to;
+    emit sentHouse(houseID, to);
   }
 
   function changePrice(uint _id, uint newPrice) public {
     require(ownerOf(_id) == msg.sender, 'you must own the house');
     require(_houseExists[_id], 'house does not exist!!');
+    //Store old house price
+    uint oldPrice = houses[_id].price;
     //Change the price of the house with associated id
     houses[_id].price = newPrice;
-
+    emit changedPrice(_id, oldPrice, newPrice);
   }
 
   function buyHouse(uint _id) public payable {
