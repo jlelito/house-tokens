@@ -87,9 +87,11 @@ class Card extends Component {
                                     <input
                                         type="number"
                                         ref={(inputAmount) => { this.inputAmount = inputAmount }}
-                                        className="form-control form-control-sm"
-                                        placeholder="0"
+                                        className="form-control form-control-sm mr-1"
+                                        placeholder="0.0"
+                                        step=".1"
                                         min="0"
+                                        style={{ width: '75px' }}
                                         required 
                                     />
                                 
