@@ -7,7 +7,7 @@ import smile from './src_images/smiley.jpg'
 import loadWeb3 from './utils.js';
 import MintHouse from './MintHouse.js';
 import ethlogo from './src_images/ETH.png';
-
+import Identicon from 'identicon.js';
 
 
 
@@ -236,6 +236,7 @@ class App extends Component {
 
           <div className="col-lg-6 mr-4">
           <h2 className="mb-4">Your Houses</h2>
+            
           <table className="table table-striped table-hover mt-1">
             <caption>Owned Houses</caption>
               <thead className="thead-light">
@@ -253,7 +254,14 @@ class App extends Component {
                 <tr className="justify-content-center" key={house.houseID}>
                 {this.state.account == house.owner ? (
                         <>
-                            <td>{house.houseID}</td>
+                            <td>{house.houseID}
+                              <img
+                                className='float-left'
+                                width='30'
+                                height='30'
+                                src={`data:house/png;base64,${new Identicon(this.state.account, 30).toString()}`}
+                              />
+                            </td>
                             <td>{house.homeAddress}</td>
                             <td>{house.sqFeet}</td>
                             <td>{window.web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} width='25' height='25'/> </td>
