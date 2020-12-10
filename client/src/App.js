@@ -219,12 +219,16 @@ class App extends Component {
         admin={this.state.admin}
         houseToken={this.state.houseToken}
       />
+      <hr></hr>
         
 
               
         <div className="row justify-content-center">
           <div className="col-sm-5">
-          <h2 className="mb-4">Send House Token</h2>
+            
+            {this.state.houseTokenBalance == 0 ? <h2>No House Tokens Owned!</h2> : (
+              <>
+              <h2 className="mb-4">Send House Token</h2>
             <form className="mb-3" onSubmit={(event) => {
                             event.preventDefault()
                             let amount, targetAddress
@@ -267,6 +271,8 @@ class App extends Component {
                         
                         
               </form>
+              </>
+            )}
           </div>
           
 
