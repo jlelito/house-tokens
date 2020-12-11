@@ -39,91 +39,90 @@ class Card extends Component {
     render() {
   
       return (
-        <div className="resume-section ">
-          
-            <main role="main" className="container-fluid d-flex justify-content-center">
-              <div className="card-group justify-content-center">
+        <div> 
+            <main role="main" className="container-fluid d-flex justify-content-center" >
+              <div className="card-group justify-content-center" style={{ maxWidth: '375px' }}>
                 
                     <div className="row">
-                    <div className="card mb-4 mx-4" >
-                      <div className="card-header">
-                        
-                        <img
-                          className='mr-2'
-                          width='30'
-                          height='30'
-                          src={`data:house/png;base64,${new Identicon(this.props.house.owner, 30).toString()}`}
-                        />
-                        <small className="text-muted">{this.props.house.owner}</small>
-                      </div>
-                      <ul id="houseList" className="list-group list-group-flush">
-                        <li className="list-group-item">
-                          <p className="text-center"><img src={this.chooseImage(this.props.house.sqFeet)} style={{ maxWidth: '350px', maxHeight: '150px'}}/></p>
-                          <p>{this.props.house.homeAddress}</p>
-                          <p>Square Feet: {this.props.house.sqFeet} sq/feet</p>
-                          <p>Bedrooms: {this.props.house.bedrooms}</p>
-                          <p>Bathrooms: {this.props.house.bathrooms}</p>
-                        </li>
-                        <li  className="list-group-item py-2">
-                            
-                          <small className="float-left mt-1 text-muted">
-                            <b>Price: {window.web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25'/></b>
-                          </small>
-                          {this.props.house.owner == this.props.account ? 
-                          <>
-  
+                      <div className="card mb-4 mx-4" >
+                        <div className="card-header">
                           
-                          <form 
-                            className="float-right"
-                            onSubmit={(event) => {
-                             event.preventDefault()
-                             let newPrice
-                             newPrice = this.inputAmount.value.toString()                         
-                             this.props.changePrice(this.props.house.houseID, newPrice)
+                          <img
+                            className='mr-2'
+                            width='30'
+                            height='30'
+                            src={`data:house/png;base64,${new Identicon(this.props.house.owner, 30).toString()}`}
+                          />
+                          <small className="text-muted">{this.props.house.owner}</small>
+                        </div>
+                        <ul id="houseList" className="list-group list-group-flush">
+                          <li className="list-group-item">
+                            <p className="text-center"><img src={this.chooseImage(this.props.house.sqFeet)} style={{ maxWidth: '350px', maxHeight: '150px'}}/></p>
+                            <p>{this.props.house.homeAddress}</p>
+                            <p>Square Feet: {this.props.house.sqFeet} sq/feet</p>
+                            <p>Bedrooms: {this.props.house.bedrooms}</p>
+                            <p>Bathrooms: {this.props.house.bathrooms}</p>
+                          </li>
+                          <li  className="list-group-item py-2">
+                              
+                            <small className="float-left mt-1 text-muted">
+                              <b>Price: {window.web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25'/></b>
+                            </small>
+                            {this.props.house.owner == this.props.account ? 
+                            <>
+    
                             
-                          }}>
-                            <div className="input-group">
-                                
-                                    <input
-                                        type="number"
-                                        ref={(inputAmount) => { this.inputAmount = inputAmount }}
-                                        className="form-control form-control-sm mr-1"
-                                        placeholder="0.0"
-                                        step=".1"
-                                        min="0"
-                                        style={{ width: '75px' }}
-                                        required 
-                                    />
-                                
-                                <span className="input-group-btn">
-                                    <button type="submit" className="btn btn-primary btn-sm" >
-                                        Change Price
-                                    </button>
-                                </span>
-                            </div>
-                          </form> 
-  
-                          </>
-                          
-                          : (
-                          <button
-                            className="btn btn-primary btn-sm float-right pt-0 mt-1"
-                            name={this.props.house.houseID}
-                            onClick={(event) => {
+                            <form 
+                              className="float-right"
+                              onSubmit={(event) => {
                               event.preventDefault()
-                               let priceOfHouse = this.props.house.price
-                               let houseID = this.props.house.houseID
-                               console.log(priceOfHouse, houseID)
-                               this.props.buyHouse(houseID, priceOfHouse)
-                            }}
-                          >
-                            Buy this House!
-                          </button>
-                  )}
-                        </li>
-                      </ul>
-                   
-                    </div>
+                              let newPrice
+                              newPrice = this.inputAmount.value.toString()                         
+                              this.props.changePrice(this.props.house.houseID, newPrice)
+                              
+                            }}>
+                              <div className="input-group">
+                                  
+                                      <input
+                                          type="number"
+                                          ref={(inputAmount) => { this.inputAmount = inputAmount }}
+                                          className="form-control form-control-sm mr-1"
+                                          placeholder="0.0"
+                                          step=".1"
+                                          min="0"
+                                          style={{ width: '75px' }}
+                                          required 
+                                      />
+                                  
+                                  <span className="input-group-btn">
+                                      <button type="submit" className="btn btn-primary btn-sm" >
+                                          Change Price
+                                      </button>
+                                  </span>
+                              </div>
+                            </form> 
+    
+                            </>
+                            
+                            : (
+                            <button
+                              className="btn btn-primary btn-sm float-right pt-0 mt-1"
+                              name={this.props.house.houseID}
+                              onClick={(event) => {
+                                event.preventDefault()
+                                let priceOfHouse = this.props.house.price
+                                let houseID = this.props.house.houseID
+                                console.log(priceOfHouse, houseID)
+                                this.props.buyHouse(houseID, priceOfHouse)
+                              }}
+                            >
+                              Buy this House!
+                            </button>
+                    )}
+                          </li>
+                        </ul>
+                    
+                      </div>
                     </div>
                     
                     

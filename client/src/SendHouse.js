@@ -12,7 +12,7 @@ class SendHouse extends Component {
             
             {this.props.houseTokenBalance == 0 ? <h2>No House Tokens Owned!</h2> : (
               <>
-              <h2 className="mb-4">Send House Token</h2>
+            <h2 className="mb-4">Send House Token</h2>
             <form className="mb-3" onSubmit={(event) => {
                             event.preventDefault()
                             let amount, targetAddress

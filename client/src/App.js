@@ -190,6 +190,7 @@ class App extends Component {
     }
 
     window.ethereum.on('accountsChanged', accounts => {
+      this.setState({loading : true})
       window.location.reload();
       this.setState({account: accounts[0]})
       
@@ -227,19 +228,19 @@ class App extends Component {
             />
           </div>
         </div>
-              &nbsp;
-              &nbsp;
+        
+        &nbsp;
+        &nbsp;   
+        &nbsp;
+        &nbsp;
+        <hr/>
               
-              &nbsp;
-              &nbsp;
-              <hr/>
-              
-              <Main 
-                houseItems = {this.state.houseTokenList}
-                buyHouse = {this.buyHouse}
-                account={this.state.account}
-                changePrice={this.changePrice}
-              />
+        <Main 
+          houseItems = {this.state.houseTokenList}
+          buyHouse = {this.buyHouse}
+          account={this.state.account}
+          changePrice={this.changePrice}
+        />
       </div>
     );
   }
