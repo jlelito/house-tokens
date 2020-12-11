@@ -46,9 +46,7 @@ class App extends Component {
       let contractAdmin = await tokenContract.methods.admin().call()
       this.setState({admin: contractAdmin})
     } else {
-      
-          window.alert('HouseToken contract not deployed to detected network. Please connect to network 7545')
-        
+          window.alert('HouseToken contract not deployed to detected network. Please connect to network 7545') 
     }
       
   }
@@ -60,7 +58,6 @@ class App extends Component {
   async updateHouses() {
     
     try{
-
         let length = await this.state.houseToken.methods.nextId().call()
         
         const houses = []
@@ -72,7 +69,7 @@ class App extends Component {
         this.setState({houseTokenList: houses})
         this.setState({loading: false})
 
-      } catch(e){
+        } catch(e){
           this.setState({loading: true})
           window.alert('Cannot update houses! Error:', e.message)
         }
@@ -137,7 +134,7 @@ class App extends Component {
         })
 
           }).on('error', (error) => {
-            window.alert('Error')
+            window.alert('Error! Could not buy house!')
           })
         }
       catch(e) {
@@ -149,7 +146,7 @@ class App extends Component {
   
     //Changes the price of a house
     changePrice = (tokenId, newPrice) => {
-
+      try{
       let ethPrice = window.web3.utils.toWei(newPrice, 'Ether')
       this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', (hash) => {
         
@@ -165,8 +162,14 @@ class App extends Component {
           
       })
       
-      
-      })
+        }).on('error', (error) => {
+          window.alert('Error! Could not change price!\n')
+        })
+      }
+      catch(e) {
+        window.alert(e)
+      }
+
     }
 
     constructor(props) {
@@ -182,9 +185,6 @@ class App extends Component {
     }
     
 
-    
-
-
   render() {
     if(this.state.loading) {
       return (
@@ -194,8 +194,6 @@ class App extends Component {
         </div>
       )
     }
-
-    
 
     window.ethereum.on('accountsChanged', accounts => {
       window.location.reload();
@@ -212,17 +210,14 @@ class App extends Component {
       
         <h1 className="my-5">House Tokens!</h1>
         
-        
+        <MintHouse
+          account={this.state.account}
+          admin={this.state.admin}
+          houseToken={this.state.houseToken}
+        />
 
-      <MintHouse
-        account={this.state.account}
-        admin={this.state.admin}
-        houseToken={this.state.houseToken}
-      />
-      <hr></hr>
-        
-
-              
+        <hr></hr>
+         
         <div className="row justify-content-center">
           <div className="col-sm-5">
             
@@ -253,14 +248,23 @@ class App extends Component {
                             
                             <div className="form-group mb-4 col-sm-3">
                               <label className="mx-2">House ID</label>
-                                <input
-                                type="number"
-                                ref={(inputAmount) => { this.inputAmount = inputAmount }}
-                                className="form-control form-control-lg"
-                                placeholder="0"
-                                min="0"
-                                required />
+                              <select className="form-control form-control-lg" id="houseIDSelect" ref={(inputAmount) => { this.inputAmount = inputAmount }}>
+                                {this.state.houseTokenList.map(house => (
+                                  <>
+                                    {this.state.account == house.owner ? (
+                                      
+                                    <option>
+                                      {house.houseID}
+                                    </option>
+                                    
+                                    ) : null}
+                                  </>
+
+
+                                ))}
+                              </select>
                             </div>
+                            
 
                           </div>
 
