@@ -7,6 +7,7 @@ import smile from './src_images/smiley.jpg'
 import loadWeb3 from './utils.js';
 import MintHouse from './MintHouse.js';
 import HouseTable from './HouseTable';
+import SendHouse from './SendHouse';
 
 
 class App extends Component {
@@ -202,100 +203,43 @@ class App extends Component {
         />
       
         <h1 className="my-5">House Tokens!</h1>
-        
         <MintHouse
           account={this.state.account}
           admin={this.state.admin}
           houseToken={this.state.houseToken}
         />
 
-        <hr></hr>
+        <hr/>
          
         <div className="row justify-content-center">
-          <div className="col-sm-5">
-            
-            {this.state.houseTokenBalance == 0 ? <h2>No House Tokens Owned!</h2> : (
-              <>
-              <h2 className="mb-4">Send House Token</h2>
-            <form className="mb-3" onSubmit={(event) => {
-                            event.preventDefault()
-                            let amount, targetAddress
-                            amount = this.inputAmount.value.toString()
-                            targetAddress = this.targetAddress.value
-                            this.sendTokens(amount, targetAddress)
+          <SendHouse
+            account={this.state.account}
+            houseTokenBalance = {this.state.houseTokenBalance}
+            houseTokenList = {this.state.houseTokenList}
+            sendTokens = {this.sendTokens}
+          />
 
-                            
-              }}>
-                           
-                        <div className="container">
-                          <div className="row justify-content-center">
-                            <div className="form-group mb-4 col-9">
-                              <label className="mx-2">Address</label>
-                                <input
-                                type="text"
-                                ref={(targetAddress) => { this.targetAddress = targetAddress }}
-                                className="form-control form-control-lg"
-                                placeholder="0x0...."
-                                required />
-                            </div>
-                            
-                            <div className="form-group mb-4 col-sm-3">
-                              <label className="mx-2">House ID</label>
-                              <select className="form-control form-control-lg" id="houseIDSelect" ref={(inputAmount) => { this.inputAmount = inputAmount }}>
-                                {this.state.houseTokenList.map(house => (
-                                  <>
-                                    {this.state.account == house.owner ? (
-                                      
-                                    <option>
-                                      {house.houseID}
-                                    </option>
-                                    
-                                    ) : null}
-                                  </>
-
-
-                                ))}
-                              </select>
-                            </div>
-                            
-
-                          </div>
-
-                          <button type="submit" className="btn btn-primary btn-lg col-md-2" >
-                              Send!
-                          </button>
-                        </div>   
-              </form>
-              </>
-            )}
+          <div className="col-lg-6 mr-4">
+            <h2 className="mb-4">Your Houses</h2>
+            <HouseTable
+              account={this.state.account}
+              houseTokenList={this.state.houseTokenList}
+            />
           </div>
-          
-            <div className="col-lg-6 mr-4">
-              <h2 className="mb-4">Your Houses</h2>
-            
-              <HouseTable
-                account={this.state.account}
-                houseTokenList={this.state.houseTokenList}
-              />
-
-            </div>
-          </div>
+        </div>
               &nbsp;
               &nbsp;
               
               &nbsp;
               &nbsp;
-              <hr></hr>
+              <hr/>
               
-
               <Main 
                 houseItems = {this.state.houseTokenList}
                 buyHouse = {this.buyHouse}
                 account={this.state.account}
                 changePrice={this.changePrice}
               />
-
-          
       </div>
     );
   }
