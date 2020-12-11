@@ -6,8 +6,7 @@ import "./App.css";
 import smile from './src_images/smiley.jpg'
 import loadWeb3 from './utils.js';
 import MintHouse from './MintHouse.js';
-import ethlogo from './src_images/ETH.png';
-import Identicon from 'identicon.js';
+import HouseTable from './HouseTable';
 
 
 class App extends Component {
@@ -87,9 +86,7 @@ class App extends Component {
               let houseID = event.returnValues.id
               let sentTo = event.returnValues.to
               window.alert('Sent House! \n\n' + 'House ID: ' + houseID + '\nReceiptiant: ' + sentTo)
-              window.location.reload()
-              
-              
+              window.location.reload() 
           })
           
             }).on('error', (error) => {
@@ -128,9 +125,7 @@ class App extends Component {
             let oldOwner = event.returnValues.owner
             price = window.web3.utils.fromWei(price, 'Ether')
             window.alert('Bought House! \n\n' + 'Address: ' + result + '\nPrice: ' + price + ' ETH' + '\nBought From: ' + oldOwner)
-            window.location.reload()
-            
-            
+            window.location.reload()  
         })
 
           }).on('error', (error) => {
@@ -157,9 +152,7 @@ class App extends Component {
           oldPrice = window.web3.utils.fromWei(oldPrice, 'Ether')
           newPrice = window.web3.utils.fromWei(newPrice, 'Ether')
           window.alert('Changed Price! \n\n' + 'House ID: ' + targetID + '\nOld Price: ' + oldPrice + ' ETH' + '\nNew Price: ' + newPrice + ' ETH')
-          window.location.reload()
-          
-          
+          window.location.reload()  
       })
       
         }).on('error', (error) => {
@@ -271,59 +264,21 @@ class App extends Component {
                           <button type="submit" className="btn btn-primary btn-lg col-md-2" >
                               Send!
                           </button>
-                        </div>
-                        
-                        
+                        </div>   
               </form>
               </>
             )}
           </div>
           
-
-          <div className="col-lg-6 mr-4">
-          <h2 className="mb-4">Your Houses</h2>
+            <div className="col-lg-6 mr-4">
+              <h2 className="mb-4">Your Houses</h2>
             
-          <table className="table table-striped table-hover mt-1">
-            <caption>Owned Houses</caption>
-              <thead className="thead-light">
-                          <tr>
-                              <th>House ID</th>
-                              <th>Address</th>
-                              <th>Square Feet</th>
-                              <th>Price</th>
-                              <th>Bedrooms</th>
-                              <th>Bathrooms</th>
-                          </tr>
-              </thead>
-              <tbody>
-              {this.state.houseTokenList.map(house => (
-                <tr className="justify-content-center" key={house.houseID}>
-                {this.state.account == house.owner ? (
-                        <>
-                            <td>{house.houseID}
-                              <img
-                                className='float-left'
-                                width='30'
-                                height='30'
-                                src={`data:house/png;base64,${new Identicon(this.state.account, 30).toString()}`}
-                              />
-                            </td>
-                            <td>{house.homeAddress}</td>
-                            <td>{house.sqFeet}</td>
-                            <td>{window.web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} width='25' height='25'/> </td>
-                            <td>{house.bedrooms}</td>
-                            <td>{house.bathrooms}</td>
-                        </>
-                        
-                ) : null}
-                </tr>
-                  ))}
-                  </tbody>
-            </table>
+              <HouseTable
+                account={this.state.account}
+                houseTokenList={this.state.houseTokenList}
+              />
 
-                  
-
-          </div>
+            </div>
           </div>
               &nbsp;
               &nbsp;
