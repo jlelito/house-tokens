@@ -119,14 +119,15 @@ class App extends Component {
      buyHouse = (tokenId, housePrice) => {
       try{
       this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
-        
+        this.setState({hash:hash})
         this.state.houseToken.events.boughtHouse({}, async (error, event) => {
             let result = event.returnValues.homeAddress
             let price = event.returnValues.price
             let oldOwner = event.returnValues.owner
             price = window.web3.utils.fromWei(price, 'Ether')
-            window.alert('Bought House! \n\n' + 'Address: ' + result + '\nPrice: ' + price + ' ETH' + '\nBought From: ' + oldOwner)
-            window.location.reload()  
+            window.alert('Bought House! \n\n' + 'Transaction: ' + hash + '\n\nAddress: ' + result + '\nPrice: ' + price + ' ETH' + '\nBought From: ' + oldOwner)
+            
+            //window.location.reload()  
         })
 
           }).on('error', (error) => {
@@ -174,7 +175,8 @@ class App extends Component {
         houseToken: {},
         houseTokenBalance: '0',
         houseTokenList: [],
-        loading: true
+        loading: true,
+        hash: '0x0'
       }
     }
     
@@ -201,6 +203,7 @@ class App extends Component {
         <Navbar 
           account={this.state.account}
           currentBalance={this.state.houseTokenBalance}
+          hash={this.state.hash}
         />
       
         <h1 className="my-5">House Tokens!</h1>
