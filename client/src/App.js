@@ -45,15 +45,19 @@ class App extends Component {
       
       let contractAdmin = await tokenContract.methods.admin().call()
       this.setState({admin: contractAdmin})
+
+      let currentEthBalance = await web3.eth.getBalance(accounts[0])
+      currentEthBalance = window.web3.utils.fromWei(currentEthBalance, 'Ether')
+      this.setState({currentEthBalance: currentEthBalance})
+
     } else {
-          window.alert('HouseToken contract not deployed to detected network. Please connect to network 7545') 
+          window.alert('HouseToken contract not deployed to detected network. Please connect to Ropsten Network') 
     }
+
+    
       
   }
   
-
-    
-
     //Update the House Ids and Owner List
   async updateHouses() {
     
@@ -76,18 +80,24 @@ class App extends Component {
     
 }
 
+
+
     
   //Sends tokens to a specified address
     sendTokens = (tokenId, address) => {
       try{
           
-          this.state.houseToken.methods.transferHouse(address, tokenId).send({ from: this.state.account }).on('transactionHash', (hash) => {
-          
+          this.state.houseToken.methods.transferHouse(address, tokenId).send({ from: this.state.account }).on('transactionHash', async (hash) => {
+           
+            this.setState({hash:hash})
+            this.setState({action: 'Sent House'})
             this.state.houseToken.events.sentHouse({}, async (error, event) => {
               let houseID = event.returnValues.id
               let sentTo = event.returnValues.to
-              window.alert('Sent House! \n\n' + 'House ID: ' + houseID + '\nReceiptiant: ' + sentTo)
-              window.location.reload() 
+              window.alert('Sent House! \n\n' + 'House ID: ' + houseID + '\nReceipient: ' + sentTo)
+              await this.updateHouses()
+              let currentHouseTokenBalance = await this.state.houseToken.methods.balanceOf(this.state.account).call()
+              this.setState({ houseTokenBalance: currentHouseTokenBalance })
           })
           
             }).on('error', (error) => {
@@ -104,8 +114,10 @@ class App extends Component {
       
       let ethPrice = window.web3.utils.toWei(price, 'Ether')
       try{
-      this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', (hash) => {
-        window.location.reload();
+      this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', async (hash) => {
+        this.setState({hash:hash})
+        this.setState({action: 'Minted House'})
+        await this.updateHouses()
         
       })
       } catch(e) {
@@ -120,14 +132,15 @@ class App extends Component {
       try{
       this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
         this.setState({hash:hash})
+        this.setState({action: 'Bought House'})
         this.state.houseToken.events.boughtHouse({}, async (error, event) => {
             let result = event.returnValues.homeAddress
             let price = event.returnValues.price
             let oldOwner = event.returnValues.owner
             price = window.web3.utils.fromWei(price, 'Ether')
             window.alert('Bought House! \n\n' + 'Transaction: ' + hash + '\n\nAddress: ' + result + '\nPrice: ' + price + ' ETH' + '\nBought From: ' + oldOwner)
-            
-            //window.location.reload()  
+            await this.updateHouses()
+             
         })
 
           }).on('error', (error) => {
@@ -145,8 +158,9 @@ class App extends Component {
     changePrice = (tokenId, newPrice) => {
       try{
       let ethPrice = window.web3.utils.toWei(newPrice, 'Ether')
-      this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', (hash) => {
-        
+      this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', async (hash) => {
+        this.setState({hash:hash})
+        this.setState({action: 'Changed Price'})
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
           let targetID = event.returnValues.id
           let oldPrice = event.returnValues.oldPrice
@@ -154,7 +168,7 @@ class App extends Component {
           oldPrice = window.web3.utils.fromWei(oldPrice, 'Ether')
           newPrice = window.web3.utils.fromWei(newPrice, 'Ether')
           window.alert('Changed Price! \n\n' + 'House ID: ' + targetID + '\nOld Price: ' + oldPrice + ' ETH' + '\nNew Price: ' + newPrice + ' ETH')
-          window.location.reload()  
+          await this.updateHouses()
       })
       
         }).on('error', (error) => {
@@ -174,9 +188,12 @@ class App extends Component {
         admin:'0x0',
         houseToken: {},
         houseTokenBalance: '0',
+        currentEthBalance: '0',
         houseTokenList: [],
         loading: true,
-        hash: '0x0'
+        hash: '0x0',
+        action: null,
+        wrongNetwork: false
       }
     }
     
@@ -191,10 +208,10 @@ class App extends Component {
       )
     }
 
-    window.ethereum.on('accountsChanged', accounts => {
-      this.setState({loading : true})
-      window.location.reload();
+    window.ethereum.on('accountsChanged', async accounts => {
       this.setState({account: accounts[0]})
+      window.location.reload()
+      
       
     });
 
@@ -204,8 +221,11 @@ class App extends Component {
           account={this.state.account}
           currentBalance={this.state.houseTokenBalance}
           hash={this.state.hash}
+          action={this.state.action}
+          balance={this.state.currentEthBalance}
+          
         />
-      
+        
         <h1 className="my-5">House Tokens!</h1>
         <MintHouse
           account={this.state.account}
