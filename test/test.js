@@ -16,8 +16,6 @@ contract("House", accounts => {
 
   it("Should deploy the contract", async () => {
     address = HouseInstance.address
-
-    
     assert.equal(address, HouseInstance.address)
   });
 
@@ -25,13 +23,12 @@ contract("House", accounts => {
   it("Mints House Tokens", async () => {
     bal = await HouseInstance.balanceOf('0xfC93aDfc3daB905fE5697D48Bf4B396801f49bD4')
     bal = bal.toNumber()
-    console.log('Balance:', bal)
-    assert.equal(bal, 6)
+    assert.equal(bal, 3)
+    
     await HouseInstance.mint("Medici Ct", 1000, 20, 2, 1)
     bal = await HouseInstance.balanceOf('0xfC93aDfc3daB905fE5697D48Bf4B396801f49bD4')
     bal = bal.toNumber()
-    console.log('Balance:', bal)
-    assert.equal(bal, 7)
+    assert.equal(bal, 4)
 
   });
 
@@ -45,9 +42,20 @@ contract("House", accounts => {
     bal2 = await HouseInstance.balanceOf('0xE8C4e9611B89ffDD1734cE759692518F765Cf465')
     bal2 = bal2.toNumber()
     
-    assert.equal(bal1, 6)
+    assert.equal(bal1, 3)
     assert.equal(bal2, 1)
 
+  });
+
+  it("Changes Price of House", async () => {
+    let currentHouse = await HouseInstance.houses(1)
+    let currentPrice = currentHouse.price
+    console.log('Current Price of House:', currentPrice.toNumber())
+    await HouseInstance.changePrice(1, 200)
+    let newHouse = await HouseInstance.houses(1)
+    let newPrice = newHouse.price
+    console.log('New Price of House:', newPrice.toNumber())
+    assert.equal(newPrice, 200)
   });
 
   it("Buy a House Token", async () => {
@@ -55,7 +63,6 @@ contract("House", accounts => {
     bal1 = bal1.toNumber()
     bal2 = await HouseInstance.balanceOf(accounts[1])
     bal2 = bal2.toNumber()
-    console.log('Balance for 2nd dude', bal2)
 
     // Make sure cannot buy your own house
     await HouseInstance.buyHouse(3, {from: accounts[0], value: web3.utils.toWei('8', 'Ether')}).should.be.rejected
