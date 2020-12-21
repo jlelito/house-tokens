@@ -72,6 +72,9 @@ class App extends Component {
         
         this.setState({houseTokenList: houses})
         this.setState({loading: false})
+        let currentEthBalance = await window.web3.eth.getBalance(this.state.account)
+        currentEthBalance = window.web3.utils.fromWei(currentEthBalance, 'Ether')
+        this.setState({currentEthBalance: currentEthBalance})
 
         } catch(e){
           this.setState({loading: true})
@@ -226,7 +229,7 @@ class App extends Component {
           
         />
         
-        <h1 className="my-5">House Tokens!</h1>
+        <h1 className="my-5" id="title">House Tokens!</h1>
         <MintHouse
           account={this.state.account}
           admin={this.state.admin}
