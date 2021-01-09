@@ -48,9 +48,9 @@ class Card extends Component {
                         <div className="card-header">
                           
                           <img
-                            className='mr-2'
-                            width='30'
-                            height='30'
+                            className='mr-2 float-left rounded'
+                            width='20'
+                            height='20'
                             src={`data:house/png;base64,${new Identicon(this.props.house.owner, 30).toString()}`}
                           />
                           <small className="text-muted">{this.props.house.owner}</small>
@@ -88,9 +88,9 @@ class Card extends Component {
                                           ref={(inputAmount) => { this.inputAmount = inputAmount }}
                                           className="form-control form-control-sm mr-1"
                                           placeholder="0.0"
-                                          step=".1"
+                                          step=".01"
                                           min="0"
-                                          style={{ width: '75px' }}
+                                          style={{ width: '55px' }}
                                           required 
                                       />
                                   

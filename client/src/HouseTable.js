@@ -27,7 +27,7 @@ render() {
                         <>
                             <td>{house.houseID}
                               <img
-                                className='float-left'
+                                className='float-left rounded'
                                 width='30'
                                 height='30'
                                 src={`data:house/png;base64,${new Identicon(this.props.account, 30).toString()}`}

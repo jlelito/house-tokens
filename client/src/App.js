@@ -228,8 +228,8 @@ class App extends Component {
           balance={this.state.currentEthBalance}
           
         />
-        
-        <h1 className="my-5" id="title">House Tokens!</h1>
+        &nbsp;
+        <h1 className="mt-5" id="title">House Tokens!</h1>
         <MintHouse
           account={this.state.account}
           admin={this.state.admin}

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Identicon from 'identicon.js';
-import ethlogo from './src_images/ETH.png';
 import Card from './Card.js';
 
 
