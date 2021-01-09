@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/house-tokens/static/css/main.30b7bd8a.chunk.css",
+    "main.js": "/house-tokens/static/js/main.441f31ea.chunk.js",
+    "main.js.map": "/house-tokens/static/js/main.441f31ea.chunk.js.map",
+    "runtime-main.js": "/house-tokens/static/js/runtime-main.6f5c93b1.js",
+    "runtime-main.js.map": "/house-tokens/static/js/runtime-main.6f5c93b1.js.map",
+    "static/css/2.9b79e585.chunk.css": "/house-tokens/static/css/2.9b79e585.chunk.css",
+    "static/js/2.4f63b5b9.chunk.js": "/house-tokens/static/js/2.4f63b5b9.chunk.js",
+    "static/js/2.4f63b5b9.chunk.js.map": "/house-tokens/static/js/2.4f63b5b9.chunk.js.map",
+    "index.html": "/house-tokens/index.html",
+    "precache-manifest.94c9a5bd50a59e9527855df3f89a4109.js": "/house-tokens/precache-manifest.94c9a5bd50a59e9527855df3f89a4109.js",
+    "service-worker.js": "/house-tokens/service-worker.js",
+    "static/css/2.9b79e585.chunk.css.map": "/house-tokens/static/css/2.9b79e585.chunk.css.map",
+    "static/css/main.30b7bd8a.chunk.css.map": "/house-tokens/static/css/main.30b7bd8a.chunk.css.map",
+    "static/media/ETH.png": "/house-tokens/static/media/ETH.78ef24a2.png",
+    "static/media/eth-diamond-rainbow.png": "/house-tokens/static/media/eth-diamond-rainbow.c7be19d8.png",
+    "static/media/smiley.jpg": "/house-tokens/static/media/smiley.50df7b69.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6f5c93b1.js",
+    "static/css/2.9b79e585.chunk.css",
+    "static/js/2.4f63b5b9.chunk.js",
+    "static/css/main.30b7bd8a.chunk.css",
+    "static/js/main.441f31ea.chunk.js"
+  ]
+}
