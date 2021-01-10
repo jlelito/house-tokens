@@ -77,7 +77,7 @@ class Main extends Component {
                             
         }}>
         <div className="container">
-          <div className="form-row float-right">
+          <div className="form-row float-right mb-3">
             <div className="col-auto">
               <label>Bedrooms</label>
               <select className="form-control" id="houseFilterBedrooms" ref={(bedroomsInputAmount) => { this.bedroomsInputAmount = bedroomsInputAmount }}>

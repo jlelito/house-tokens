@@ -35,7 +35,7 @@ render() {
                             </td>
                             <td>{house.homeAddress}</td>
                             <td>{house.sqFeet} sq/ft</td>
-                            <td>{window.web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} className="float-right" width='25' height='25'/> </td>
+                            <td>{window.web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} className="float-right" width='20' height='20'/> </td>
                             <td>{house.bedrooms}</td>
                             <td>{house.bathrooms}</td>
                         </>
