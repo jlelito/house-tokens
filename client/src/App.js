@@ -75,7 +75,7 @@ class App extends Component {
         let currentEthBalance = await window.web3.eth.getBalance(this.state.account)
         currentEthBalance = window.web3.utils.fromWei(currentEthBalance, 'Ether')
         this.setState({currentEthBalance: currentEthBalance})
-
+        console.log(this.state.houseTokenList)
         } catch(e){
           this.setState({loading: true})
           window.alert('Cannot update houses! Error:', e.message)
@@ -170,8 +170,9 @@ class App extends Component {
           let newPrice = event.returnValues.newPrice
           oldPrice = window.web3.utils.fromWei(oldPrice, 'Ether')
           newPrice = window.web3.utils.fromWei(newPrice, 'Ether')
-          window.alert('Changed Price! \n\n' + 'House ID: ' + targetID + '\nOld Price: ' + oldPrice + ' ETH' + '\nNew Price: ' + newPrice + ' ETH')
           await this.updateHouses()
+          window.alert('Changed Price! \n\n' + 'House ID: ' + targetID + '\nOld Price: ' + oldPrice + ' ETH' + '\nNew Price: ' + newPrice + ' ETH')
+          
       })
       
         }).on('error', (error) => {
