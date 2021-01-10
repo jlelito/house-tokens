@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import sendhouse from './src_images/sendhouse.jpg'
 
 class SendHouse extends Component {
 
@@ -12,7 +13,8 @@ class SendHouse extends Component {
             
             {this.props.houseTokenBalance == 0 ? <h2>No House Tokens Owned!</h2> : (
               <>
-            <h2 className="mb-4">Send House Token</h2>
+            <h2 className="mb-4">Send House Token
+            <img src={sendhouse} className="ml-2" width='75' height='75'/></h2> 
             <form className="mb-3" onSubmit={(event) => {
                             event.preventDefault()
                             let amount, targetAddress
