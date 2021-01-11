@@ -38,8 +38,8 @@ class Main extends Component {
     
   }
 
-  filterHouses = (sqFeet) => {
-    return sqFeet > 300
+  sortHouses = (e) => {
+    console.log(e.target.value)
   }
 
   constructor(props) {
@@ -61,10 +61,10 @@ class Main extends Component {
                             bedrooms = this.bedroomsInputAmount.value.toString()
                             bathrooms = this.bathroomsInputAmount.value.toString()
                             sqFeetFilter = this.sqFeetInputAmount.value.toString()
-                            price = this.priceInputAmount.value.toString()
-                            price = window.web3.utils.toWei(price, 'Ether')
+                            
+                            price = window.web3.utils.toWei(this.priceInputAmount.value.toString(), 'Ether')
                             searchInput = this.searchInput.value.toString()
-                            console.log("Searched: ", searchInput)
+                            
                             
                             let newFilteredHouses = this.props.houseItems.filter(house => house.bedrooms >= parseInt(bedrooms)
                             && house.bathrooms >= parseInt(bathrooms)
@@ -80,16 +80,16 @@ class Main extends Component {
                             
         }}>
         <div className="container">
-          <div className="form-row justify-content-center mb-3">
+          <div className="form-row justify-content-center mb-1">
             <div className="col-auto">
             
               <label>Search</label> 
               <div className="input-group">
-              <img src={magnify} className="float-right mt-1" width='35' height='35'/>
-              <input class="form-control form-control" type="text" placeholder="Search..." ref={(searchInput) => { this.searchInput = searchInput }}
-                aria-label="Search">
-                
-              </input>
+                <img src={magnify} className="float-right mt-1" width='35' height='35'/>
+                <input class="form-control form-control" type="text" placeholder="Search..." ref={(searchInput) => { this.searchInput = searchInput }}
+                  aria-label="Search">
+                  
+                </input>
               </div>
               
             </div>
@@ -194,7 +194,7 @@ class Main extends Component {
                   10+ ETH
                 </option>
                                     
-                  </select>
+              </select>
             </div>
                   <div className="col-auto">
                     <button type="submit" className="btn btn-primary mt-4" >
@@ -209,6 +209,31 @@ class Main extends Component {
                   </div>
                 </div>
               </div>
+          </form>
+
+          <form className="float-right" onChange>
+          <div className="row form-group">
+          
+            <div className="col-lg-6 mr-2">
+            <label className="mr-1">Sort by:</label>
+              <select className="form-control-sm float-right mb-2" id="houseSort" 
+              onChange={(e) => {this.sortHouses(e)}}
+              >
+                <option value="squareFt">
+                    Square Feet
+                </option>
+                <option value="bedrooms">
+                    Bathrooms
+                </option> 
+                <option value="bedrooms">
+                    Bedrooms
+                </option> 
+                <option value="price">
+                    Price
+                </option>                            
+              </select>
+            </div>
+          </div>
           </form>
           
           
