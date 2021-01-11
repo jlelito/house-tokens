@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Card from './Card.js';
 import filter from './src_images/filter.png';
+import magnify from './src_images/magnify.png';
 
 
 const IMAGES_ARRAY = [
@@ -55,19 +56,21 @@ class Main extends Component {
           
         <form className="mb-3 form-inline" onSubmit={(event) => {
                             event.preventDefault()
-                            let bedrooms, bathrooms, price, sqFeetFilter
+                            let bedrooms, bathrooms, price, sqFeetFilter, searchInput
                             
                             bedrooms = this.bedroomsInputAmount.value.toString()
                             bathrooms = this.bathroomsInputAmount.value.toString()
                             sqFeetFilter = this.sqFeetInputAmount.value.toString()
                             price = this.priceInputAmount.value.toString()
                             price = window.web3.utils.toWei(price, 'Ether')
-                           
+                            searchInput = this.searchInput.value.toString()
+                            console.log("Searched: ", searchInput)
                             
                             let newFilteredHouses = this.props.houseItems.filter(house => house.bedrooms >= parseInt(bedrooms)
                             && house.bathrooms >= parseInt(bathrooms)
                             && house.sqFeet >= parseInt(sqFeetFilter)
                             && house.price >= parseInt(price)
+                            && house.homeAddress.toLowerCase().includes(searchInput.toLowerCase())
                             )
                           
                     
@@ -77,7 +80,19 @@ class Main extends Component {
                             
         }}>
         <div className="container">
-          <div className="form-row float-right mb-3">
+          <div className="form-row justify-content-center mb-3">
+            <div className="col-auto">
+            
+              <label>Search</label> 
+              <div className="input-group">
+              <img src={magnify} className="float-right mt-1" width='35' height='35'/>
+              <input class="form-control form-control" type="text" placeholder="Search..." ref={(searchInput) => { this.searchInput = searchInput }}
+                aria-label="Search">
+                
+              </input>
+              </div>
+              
+            </div>
             <div className="col-auto">
               <label>Bedrooms</label>
               <select className="form-control" id="houseFilterBedrooms" ref={(bedroomsInputAmount) => { this.bedroomsInputAmount = bedroomsInputAmount }}>

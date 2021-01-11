@@ -8,6 +8,7 @@ import loadWeb3 from './utils.js';
 import MintHouse from './MintHouse.js';
 import HouseTable from './HouseTable';
 import SendHouse from './SendHouse';
+import houselogo from './src_images/houselogo.jpg';
 
 
 class App extends Component {
@@ -165,12 +166,13 @@ class App extends Component {
         this.setState({hash:hash})
         this.setState({action: 'Changed Price'})
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
+          await this.updateHouses()
           let targetID = event.returnValues.id
           let oldPrice = event.returnValues.oldPrice
           let newPrice = event.returnValues.newPrice
           oldPrice = window.web3.utils.fromWei(oldPrice, 'Ether')
           newPrice = window.web3.utils.fromWei(newPrice, 'Ether')
-          await this.updateHouses()
+          
           window.alert('Changed Price! \n\n' + 'House ID: ' + targetID + '\nOld Price: ' + oldPrice + ' ETH' + '\nNew Price: ' + newPrice + ' ETH')
           
       })
@@ -206,7 +208,7 @@ class App extends Component {
     if(this.state.loading) {
       return (
         <div className="text-center">
-          <h1 className="text-center mt-5">Loading the Blockchain! Please Wait!</h1> 
+          <h1 className="text-center mt-5">Loading the Blockchain! Please connect to Ropsten Test Network!</h1> 
           <img className="center-block" src={smile}></img>
         </div>
       )
@@ -248,7 +250,7 @@ class App extends Component {
           />
 
           <div className="col-lg-6 mr-4">
-            <h2 className="mb-4">Your Houses</h2>
+            <h2 className="mb-4">Your Houses <img src={houselogo} width="60" height="60" alt="house logo" /></h2>
             <HouseTable
               account={this.state.account}
               houseTokenList={this.state.houseTokenList}

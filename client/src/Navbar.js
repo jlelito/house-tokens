@@ -3,6 +3,7 @@ import Identicon from 'identicon.js';
 import ethlogo from './src_images/ETH.png';
 import coloreth from './src_images/eth-diamond-rainbow.png';
 
+
 class Navbar extends Component {
 
   render() {
