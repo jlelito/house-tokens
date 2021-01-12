@@ -38,8 +38,39 @@ class Main extends Component {
     
   }
 
-  sortHouses = (e) => {
-    console.log(e.target.value)
+  sortHouses = e => {
+    //Sort SquareFeet Descending 
+    if(e == "squareFt"){
+      let sortedList = this.state.filteredHouseList.sort(function(a,b){
+        return b.sqFeet - a.sqFeet
+      })
+      this.setState({filteredHouseList: sortedList})
+    }
+    //Sort Bathrooms Descending
+    else if(e == "bathrooms"){
+      let sortedList = this.state.filteredHouseList.sort(function(a,b){
+        return b.bathrooms - a.bathrooms
+      })
+      this.setState({filteredHouseList: sortedList})
+    }
+    //Sort Bedrooms Descending
+    else if(e == "bedrooms"){
+      let sortedList = this.state.filteredHouseList.sort(function(a,b){
+        return b.bedrooms - a.bedrooms
+      })
+      this.setState({filteredHouseList: sortedList})
+    }
+    //Sort Price Descending
+    else if(e == "price"){
+      let sortedList = this.state.filteredHouseList.sort(function(a,b){
+        return b.price - a.price
+      })
+      this.setState({filteredHouseList: sortedList})
+    }
+
+    else{
+      console.log("Nothing Chosen!")
+    }
   }
 
   constructor(props) {
@@ -211,29 +242,38 @@ class Main extends Component {
               </div>
           </form>
 
-          <form className="float-right" onChange>
-          <div className="row form-group">
-          
-            <div className="col-lg-6 mr-2">
-            <label className="mr-1">Sort by:</label>
-              <select className="form-control-sm float-right mb-2" id="houseSort" 
-              onChange={(e) => {this.sortHouses(e)}}
-              >
-                <option value="squareFt">
-                    Square Feet
-                </option>
-                <option value="bedrooms">
-                    Bathrooms
-                </option> 
-                <option value="bedrooms">
-                    Bedrooms
-                </option> 
-                <option value="price">
-                    Price
-                </option>                            
-              </select>
+          <form className="form-inline float-right mr-5" onSubmit={(event) => {
+            event.preventDefault()
+            let selection = this.sortInputAmount.value.toString()
+            this.sortHouses(selection)
+            
+            }}>
+            <div className="row form-group">
+            <label className="mr-1 mb-2">Sort by:</label>
+              <div className="col-lg-6 mr-2">
+              
+                <select className="form-control-sm mb-2" id="houseSort" 
+                  ref={(sortInputAmount) => { this.sortInputAmount = sortInputAmount }}
+                >
+                  <option value="squareFt">
+                      Square Feet
+                  </option>
+                  <option value="bathrooms">
+                      Bathrooms
+                  </option> 
+                  <option value="bedrooms">
+                      Bedrooms
+                  </option> 
+                  <option value="price">
+                      Price
+                  </option>                            
+                </select>
+                
+              </div>
+              <button type="submit" className="btn btn-primary btn-sm float-left mb-2" >
+                  Sort
+              </button>
             </div>
-          </div>
           </form>
           
           
