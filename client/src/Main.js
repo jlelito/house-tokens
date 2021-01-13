@@ -242,37 +242,35 @@ class Main extends Component {
               </div>
           </form>
 
-          <form className="form-inline float-right mr-5" onSubmit={(event) => {
+          <form className="form-inline float-lg-right mr-5" onSubmit={(event) => {
             event.preventDefault()
             let selection = this.sortInputAmount.value.toString()
             this.sortHouses(selection)
             
             }}>
-            <div className="row form-group">
-            <label className="mr-1 mb-2">Sort by:</label>
-              <div className="col-lg-6 mr-2">
-              
-                <select className="form-control-sm mb-2" id="houseSort" 
-                  ref={(sortInputAmount) => { this.sortInputAmount = sortInputAmount }}
-                >
-                  <option value="squareFt">
-                      Square Feet
-                  </option>
-                  <option value="bathrooms">
-                      Bathrooms
-                  </option> 
-                  <option value="bedrooms">
-                      Bedrooms
-                  </option> 
-                  <option value="price">
-                      Price
-                  </option>                            
-                </select>
-                
+            <div className="form-group row">
+              <div className="col-12 mr-5">
+                <label className="">Sort by:</label>
+                  <select className="form-control-sm mb-2 mr-1" id="houseSort" 
+                    ref={(sortInputAmount) => { this.sortInputAmount = sortInputAmount }}
+                  >
+                    <option value="squareFt">
+                        Square Feet
+                    </option>
+                    <option value="bathrooms">
+                        Bathrooms
+                    </option> 
+                    <option value="bedrooms">
+                        Bedrooms
+                    </option> 
+                    <option value="price">
+                        Price
+                    </option>                            
+                  </select>
+                <button type="submit" className="btn btn-primary btn-sm mb-2 mr-5" >
+                    Sort
+                </button>
               </div>
-              <button type="submit" className="btn btn-primary btn-sm float-left mb-2" >
-                  Sort
-              </button>
             </div>
           </form>
           
