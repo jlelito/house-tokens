@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "270bbbf3a5f2a0f7dd101db44e132820",
+    "revision": "bd78d1ae713949c38417df6bb697a4df",
     "url": "/house-tokens/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/house-tokens/static/css/2.9b79e585.chunk.css"
   },
   {
-    "revision": "ea783ff65424886f6bf3",
+    "revision": "f5973248de19c310c768",
     "url": "/house-tokens/static/css/main.30b7bd8a.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/house-tokens/static/js/2.4973f32a.chunk.js"
   },
   {
-    "revision": "ea783ff65424886f6bf3",
-    "url": "/house-tokens/static/js/main.5b962eab.chunk.js"
+    "revision": "f5973248de19c310c768",
+    "url": "/house-tokens/static/js/main.7fddc702.chunk.js"
   },
   {
     "revision": "f02b2ddf1235f75c2405",
