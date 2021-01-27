@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "http://jlelito.github.io/house-tokens",
-
   "dependencies": {
     "@openzeppelin/contracts": "^3.2.0",
     "bootstrap": "^4.5.2",
@@ -11,7 +10,9 @@
     "chai-as-promised": "^7.1.1",
     "identicon.js": "^2.3.3",
     "react": "16.11.0",
+    "react-bootstrap": "^1.4.3",
     "react-dom": "16.11.0",
+    "react-loader-spinner": "^3.1.14",
     "react-scripts": "3.2.0",
     "web3": "1.2.2"
   },

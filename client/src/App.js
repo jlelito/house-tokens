@@ -9,6 +9,7 @@ import MintHouse from './MintHouse.js';
 import HouseTable from './HouseTable';
 import SendHouse from './SendHouse';
 import houselogo from './src_images/houselogo.jpg';
+import Notification from './Notification.js';
 
 
 class App extends Component {
@@ -76,7 +77,6 @@ class App extends Component {
         let currentEthBalance = await window.web3.eth.getBalance(this.state.account)
         currentEthBalance = window.web3.utils.fromWei(currentEthBalance, 'Ether')
         this.setState({currentEthBalance: currentEthBalance})
-        console.log(this.state.houseTokenList)
         } catch(e){
           this.setState({loading: true})
           window.alert('Cannot update houses! Error:', e.message)
@@ -95,15 +95,22 @@ class App extends Component {
            
             this.setState({hash:hash})
             this.setState({action: 'Sent House'})
+            this.setState({trxStatus: 'Pending'})
+            this.showNotification()
             this.state.houseToken.events.sentHouse({}, async (error, event) => {
-              let houseID = event.returnValues.id
-              let sentTo = event.returnValues.to
-              window.alert('Sent House! \n\n' + 'House ID: ' + houseID + '\nReceipient: ' + sentTo)
               await this.updateHouses()
               let currentHouseTokenBalance = await this.state.houseToken.methods.balanceOf(this.state.account).call()
               this.setState({ houseTokenBalance: currentHouseTokenBalance })
           })
           
+          })
+          .on('receipt', (receipt) => {
+            if(receipt.status === true){
+              this.setState({trxStatus: 'Success'})
+            }
+            else if(receipt.status === false){
+              this.setState({trxStatus: 'Failed'})
+            }
             }).on('error', (error) => {
               window.alert('Error')
           })
@@ -121,8 +128,20 @@ class App extends Component {
       this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', async (hash) => {
         this.setState({hash:hash})
         this.setState({action: 'Minted House'})
+        this.setState({trxStatus: 'Pending'})
+        this.showNotification()
         await this.updateHouses()
         
+      }).on('receipt', (receipt) => {
+        if(receipt.status === true){
+          this.setState({trxStatus: 'Success'})
+        }
+        else if(receipt.status === false){
+          this.setState({trxStatus: 'Failed'})
+        }
+
+      }).on('error', (error) => {
+        window.alert('Error! Could not buy house!')
       })
       } catch(e) {
         window.alert(e)
@@ -137,16 +156,23 @@ class App extends Component {
       this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
         this.setState({hash:hash})
         this.setState({action: 'Bought House'})
+        this.setState({trxStatus: 'Pending'})
+        this.showNotification()
         this.state.houseToken.events.boughtHouse({}, async (error, event) => {
             let result = event.returnValues.homeAddress
             let price = event.returnValues.price
             let oldOwner = event.returnValues.owner
             price = window.web3.utils.fromWei(price, 'Ether')
-            window.alert('Bought House! \n\n' + 'Transaction: ' + hash + '\n\nAddress: ' + result + '\nPrice: ' + price + ' ETH' + '\nBought From: ' + oldOwner)
             await this.updateHouses()
              
         })
-
+      }).on('receipt', (receipt) => {
+          if(receipt.status === true){
+            this.setState({trxStatus: 'Success'})
+          }
+          else if(receipt.status === false){
+            this.setState({trxStatus: 'Failed'})
+          }
           }).on('error', (error) => {
             window.alert('Error! Could not buy house!')
           })
@@ -161,10 +187,14 @@ class App extends Component {
     //Changes the price of a house
     changePrice = (tokenId, newPrice) => {
       try{
+      const web3 = window.web3
       let ethPrice = window.web3.utils.toWei(newPrice, 'Ether')
       this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', async (hash) => {
-        this.setState({hash:hash})
-        this.setState({action: 'Changed Price'})
+         this.setState({hash:hash})
+         this.setState({action: 'Changed Price'})
+         this.setState({trxStatus: 'Pending'})
+         this.showNotification()
+      
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
           await this.updateHouses()
           let targetID = event.returnValues.id
@@ -172,13 +202,19 @@ class App extends Component {
           let newPrice = event.returnValues.newPrice
           oldPrice = window.web3.utils.fromWei(oldPrice, 'Ether')
           newPrice = window.web3.utils.fromWei(newPrice, 'Ether')
-          
-          window.alert('Changed Price! \n\n' + 'House ID: ' + targetID + '\nOld Price: ' + oldPrice + ' ETH' + '\nNew Price: ' + newPrice + ' ETH')
-          
+                    
       })
       
+        }).on('receipt', (receipt) => {
+          if(receipt.status === true){
+            this.setState({trxStatus: 'Success'})
+          }
+          else if(receipt.status === false){
+            this.setState({trxStatus: 'Failed'})
+          }
+
         }).on('error', (error) => {
-          window.alert('Error! Could not change price!\n')
+          window.alert('Error! Could not buy house!')
         })
       }
       catch(e) {
@@ -187,8 +223,13 @@ class App extends Component {
 
     }
 
+    showNotification = () => {
+      this.notificationOne.current.updateShowNotify()
+    }
+
     constructor(props) {
       super(props)
+      this.notificationOne = React.createRef()
       this.state = {
         account: '0x0',
         admin:'0x0',
@@ -199,7 +240,8 @@ class App extends Component {
         loading: true,
         hash: '0x0',
         action: null,
-        wrongNetwork: false
+        wrongNetwork: false,
+        trxStatus:null
       }
     }
     
@@ -229,7 +271,15 @@ class App extends Component {
           hash={this.state.hash}
           action={this.state.action}
           balance={this.state.currentEthBalance}
-          
+          trxStatus={this.state.trxStatus}
+        />
+        <Notification 
+            showNotification={this.state.showNotification}
+            action={this.state.action}
+            hash={this.state.hash}
+            ref={this.notificationOne}
+            trxStatus={this.state.trxStatus}
+            
         />
         &nbsp;
         <h1 className="mt-5" id="title">House Tokens!</h1>
