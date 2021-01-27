@@ -113,6 +113,12 @@ class App extends Component {
             }
             }).on('error', (error) => {
               window.alert('Error')
+          }).on('confirmation', (confirmNum) => {
+            if(confirmNum > 10) {
+              this.setState({confirmNum : '10+'})
+            } else {
+            this.setState({confirmNum})
+            }
           })
 
         } catch (e){
@@ -142,6 +148,12 @@ class App extends Component {
 
       }).on('error', (error) => {
         window.alert('Error! Could not buy house!')
+      }).on('confirmation', (confirmNum) => {
+        if(confirmNum > 10) {
+          this.setState({confirmNum : '10+'})
+        } else{
+        this.setState({confirmNum})
+        }
       })
       } catch(e) {
         window.alert(e)
@@ -175,6 +187,12 @@ class App extends Component {
           }
           }).on('error', (error) => {
             window.alert('Error! Could not buy house!')
+          }).on('confirmation', (confirmNum) => {
+            if(confirmNum > 10) {
+              this.setState({confirmNum : '10+'})
+            } else{
+            this.setState({confirmNum})
+            }
           })
         }
       catch(e) {
@@ -196,6 +214,7 @@ class App extends Component {
          this.showNotification()
       
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
+          console.log('Price Changed!!!')
           await this.updateHouses()
           let targetID = event.returnValues.id
           let oldPrice = event.returnValues.oldPrice
@@ -217,7 +236,11 @@ class App extends Component {
           window.alert('Error! Could not buy house!')
         })
         .on('confirmation', (confirmNum) => {
+          if(confirmNum > 10) {
+            this.setState({confirmNum : '10+'})
+          } else{
           this.setState({confirmNum})
+          }
         })
       }
       catch(e) {
