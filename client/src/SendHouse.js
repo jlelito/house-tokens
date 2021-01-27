@@ -21,8 +21,8 @@ class SendHouse extends Component {
                             amount = this.inputAmount.value.toString()
                             targetAddress = this.targetAddress.value
                             this.props.sendTokens(amount, targetAddress)
-
-                            
+                            this.inputAmount.value = null
+                            this.targetAddress = null             
               }}>
                            
                         <div className="container">

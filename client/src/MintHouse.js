@@ -35,8 +35,11 @@ class MintHouse extends Component {
                           homeBedrooms = this.bedrooms.value.toString()
                           homeBathrooms = this.bathrooms.value.toString()
                           this.mintHouse(homeAddress, homeSquarefeet, homePrice, homeBedrooms, homeBathrooms)
-
-                          
+                          this.address.value = null
+                          this.squareFeet.value = null
+                          this.price.value = null
+                          this.bedrooms.value = null
+                          this.bathrooms.value = null        
               }}>
                       
                       <div className="input-group row justify-content-center">

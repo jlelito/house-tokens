@@ -79,6 +79,7 @@ class Card extends Component {
                               let newPrice
                               newPrice = this.inputAmount.value.toString()                         
                               this.props.changePrice(this.props.house.houseID, newPrice)
+                              this.inputAmount.value = null
                               
                             }}>
                               <div className="input-group">

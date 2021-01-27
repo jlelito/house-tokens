@@ -216,6 +216,9 @@ class App extends Component {
         }).on('error', (error) => {
           window.alert('Error! Could not buy house!')
         })
+        .on('confirmation', (confirmNum) => {
+          this.setState({confirmNum})
+        })
       }
       catch(e) {
         window.alert(e)
@@ -241,7 +244,8 @@ class App extends Component {
         hash: '0x0',
         action: null,
         wrongNetwork: false,
-        trxStatus:null
+        trxStatus:null,
+        confirmNum:0
       }
     }
     
@@ -279,10 +283,11 @@ class App extends Component {
             hash={this.state.hash}
             ref={this.notificationOne}
             trxStatus={this.state.trxStatus}
+            confirmNum={this.state.confirmNum}
             
         />
         &nbsp;
-        <h1 className="mt-5" id="title">House Tokens!</h1>
+        <h1 className="mt-5" id="title">House Tokens</h1>
         <MintHouse
           account={this.state.account}
           admin={this.state.admin}
