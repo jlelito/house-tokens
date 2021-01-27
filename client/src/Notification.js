@@ -12,7 +12,7 @@ class Notification extends Component {
     constructor(props) {
         super(props)
         this.state= {
-            showA: true
+            showA: false
         }
     }
 
@@ -21,42 +21,44 @@ class Notification extends Component {
         <div className='row fixed-top mt-5'>
             <Toast className='mt-4 ml-4' show={this.state.showA} onClose={this.updateCloseNotify}>
                 <Toast.Header>
-                    <strong className="mr-auto">{this.props.action}</strong>
+                    <strong className='mr-auto'>Transaction Sent</strong>
                     <small>1 second ago</small>
                 </Toast.Header>
                 
                 <Toast.Body>
-                <div className='row'>
-                    <div className='col-12 float-left'>
+                <div className='row justify-content-center'>
+                    <div className='col-12'>
                         <div><b>{this.props.action}</b></div>
 
                         <div className='row justify-content-center'>
                             Status of Transaction:
                             {this.props.trxStatus === 'Pending' ? 
                                 <>
-                                <b>Pending</b>
+                                <div className='text-muted ml-2'>Pending</div>
                                 
                                 <Loader 
                                     className='ml-2'
-                                    type="Oval"
-                                    color="#00BFFF"
+                                    type='Oval'
+                                    color='#00BFFF'
                                     height={15}
                                     width={15}
                                 /> 
                                 </>
                                 :   
                                 <>
-                                {this.props.trxStatus === 'Success' ? <b className='text-success'>Success</b> : 
-                                <b className='text-danger'>Failed</b>}
+                                {this.props.trxStatus === 'Success' ? <b className='text-success ml-2'>Success</b> : 
+                                    <>{this.props.trxStatus === 'Failed' ? <b className='text-danger ml-2'>Failed</b> : null }</>
+                                }
                                 </>
                             
                             
                             }
                         </div>
                         Transaction:
-                        <a className="ml-2" href={`https://ropsten.etherscan.io/tx/${this.props.hash}`} target="_blank" rel="noreferrer">
-                            Link
+                        <a className='ml-2' href={`https://ropsten.etherscan.io/tx/${this.props.hash}`} target='_blank' rel='noreferrer'>
+                            Etherscan.io
                         </a>
+                        <div>Confirmations: {this.props.confirmNum}</div>
                         
                     </div>
                 </div>
