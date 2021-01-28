@@ -24,6 +24,10 @@ const IMAGES_ARRAY = [
 
 class Main extends Component {
 
+  componentDidMount() {
+    console.log('Main House Props: ', this.props.houseItems)
+  }
+
   chooseImage = (sqFeet) => {
     if(sqFeet <= 500){
       return IMAGES_ARRAY[0].img
@@ -41,31 +45,31 @@ class Main extends Component {
   sortHouses = e => {
     //Sort SquareFeet Descending 
     if(e == "squareFt"){
-      let sortedList = this.state.filteredHouseList.sort(function(a,b){
+      let sortedList = this.props.filteredHouseList.sort(function(a,b){
         return b.sqFeet - a.sqFeet
       })
-      this.setState({filteredHouseList: sortedList})
+      this.props.filterHouses(sortedList)
     }
     //Sort Bathrooms Descending
     else if(e == "bathrooms"){
-      let sortedList = this.state.filteredHouseList.sort(function(a,b){
+      let sortedList = this.props.filteredHouseList.sort(function(a,b){
         return b.bathrooms - a.bathrooms
       })
-      this.setState({filteredHouseList: sortedList})
+      this.props.filterHouses(sortedList)
     }
     //Sort Bedrooms Descending
     else if(e == "bedrooms"){
-      let sortedList = this.state.filteredHouseList.sort(function(a,b){
+      let sortedList = this.props.filteredHouseList.sort(function(a,b){
         return b.bedrooms - a.bedrooms
       })
-      this.setState({filteredHouseList: sortedList})
+      this.props.filterHouses(sortedList)
     }
     //Sort Price Descending
     else if(e == "price"){
-      let sortedList = this.state.filteredHouseList.sort(function(a,b){
+      let sortedList = this.props.filteredHouseList.sort(function(a,b){
         return b.price - a.price
       })
-      this.setState({filteredHouseList: sortedList})
+      this.props.filterHouses(sortedList)
     }
 
     else{
@@ -73,12 +77,11 @@ class Main extends Component {
     }
   }
 
+
   constructor(props) {
     super(props)
-    this.state = {
-      filteredHouseList : this.props.houseItems
-    }
   }
+
   render() {
 
     return (
@@ -92,23 +95,16 @@ class Main extends Component {
                             bedrooms = this.bedroomsInputAmount.value.toString()
                             bathrooms = this.bathroomsInputAmount.value.toString()
                             sqFeetFilter = this.sqFeetInputAmount.value.toString()
-                            
                             price = window.web3.utils.toWei(this.priceInputAmount.value.toString(), 'Ether')
                             searchInput = this.searchInput.value.toString()
                             
-                            
-                            let newFilteredHouses = this.props.houseItems.filter(house => house.bedrooms >= parseInt(bedrooms)
+                            let filteredHouses = this.props.houseItems.filter(house => house.bedrooms >= parseInt(bedrooms)
                             && house.bathrooms >= parseInt(bathrooms)
                             && house.sqFeet >= parseInt(sqFeetFilter)
                             && house.price >= parseInt(price)
                             && house.homeAddress.toLowerCase().includes(searchInput.toLowerCase())
                             )
-                          
-                    
-                            console.log(newFilteredHouses)
-                            this.setState({filteredHouseList: newFilteredHouses})
-                            
-                            
+                            this.props.filterHouses(filteredHouses)                                    
         }}>
         <div className="container">
           <div className="form-row justify-content-center mb-1">
@@ -117,7 +113,7 @@ class Main extends Component {
               <label>Search</label> 
               <div className="input-group">
                 <img src={magnify} className="float-right mt-1" width='35' height='35'/>
-                <input class="form-control form-control" type="text" placeholder="Search..." ref={(searchInput) => { this.searchInput = searchInput }}
+                <input className="form-control form-control" type="text" placeholder="Search..." ref={(searchInput) => { this.searchInput = searchInput }}
                   aria-label="Search">
                   
                 </input>
@@ -276,14 +272,13 @@ class Main extends Component {
           
           
           <main role="main" className="container-fluid d-flex justify-content-center">
-          
             <div className="card-group justify-content-center">
             
               { 
               
-              this.state.filteredHouseList.length == 0 ? <h2>No Houses Found!</h2> : 
+              this.props.filteredHouseList.length == 0 ? <h2>No Houses Found!</h2> : 
               
-              this.state.filteredHouseList.map((house, key) => {
+              this.props.filteredHouseList.map((house) => {
                 return(
                   <Card
                     house={house}

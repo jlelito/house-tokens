@@ -20,7 +20,6 @@ class App extends Component {
     await this.updateHouses()
   }
 
-
   //Loads all the blockchain data
   async loadBlockchainData() {
     const web3 = window.web3
@@ -64,6 +63,7 @@ class App extends Component {
   async updateHouses() {
     
     try{
+        console.log('Updating the Houses in updateHouses()')
         let length = await this.state.houseToken.methods.nextId().call()
         
         const houses = []
@@ -72,11 +72,14 @@ class App extends Component {
           houses.push(currentHouse)
         }
         
-        this.setState({houseTokenList: houses})
-        this.setState({loading: false})
+        await this.setState({houseTokenList: houses})
+        await this.setState({filteredHouseList: houses})
         let currentEthBalance = await window.web3.eth.getBalance(this.state.account)
         currentEthBalance = window.web3.utils.fromWei(currentEthBalance, 'Ether')
         this.setState({currentEthBalance: currentEthBalance})
+        console.log('Updated House List:', this.state.houseTokenList)
+        this.setState({loading:false})
+
         } catch(e){
           this.setState({loading: true})
           window.alert('Cannot update houses! Error:', e.message)
@@ -215,7 +218,7 @@ class App extends Component {
       
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
           console.log('Price Changed!!!')
-          await this.updateHouses()
+          
           let targetID = event.returnValues.id
           let oldPrice = event.returnValues.oldPrice
           let newPrice = event.returnValues.newPrice
@@ -224,13 +227,17 @@ class App extends Component {
                     
       })
       
-        }).on('receipt', (receipt) => {
+        }).on('receipt', async (receipt) => {
           if(receipt.status === true){
             this.setState({trxStatus: 'Success'})
           }
           else if(receipt.status === false){
             this.setState({trxStatus: 'Failed'})
           }
+          console.log('Updating Houses for ChangePrice')
+
+          await this.updateHouses()
+          console.log('Houses updated')
 
         }).on('error', (error) => {
           window.alert('Error! Could not buy house!')
@@ -253,6 +260,10 @@ class App extends Component {
       this.notificationOne.current.updateShowNotify()
     }
 
+    filterHouses = (filteredHouseList) => {
+      this.setState({filteredHouseList})
+    }
+
     constructor(props) {
       super(props)
       this.notificationOne = React.createRef()
@@ -263,6 +274,7 @@ class App extends Component {
         houseTokenBalance: '0',
         currentEthBalance: '0',
         houseTokenList: [],
+        filteredHouseList: [],
         loading: true,
         hash: '0x0',
         action: null,
@@ -314,7 +326,7 @@ class App extends Component {
         <MintHouse
           account={this.state.account}
           admin={this.state.admin}
-          houseToken={this.state.houseToken}
+          mintHouse={this.mintHouse}
         />
 
         <hr/>
@@ -344,9 +356,11 @@ class App extends Component {
               
         <Main 
           houseItems = {this.state.houseTokenList}
+          filteredHouseList = {this.state.filteredHouseList}
           buyHouse = {this.buyHouse}
-          account={this.state.account}
-          changePrice={this.changePrice}
+          account = {this.state.account}
+          changePrice = {this.changePrice}
+          filterHouses = {this.filterHouses}
         />
       </div>
     );
