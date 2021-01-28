@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Card from './Card.js';
 import filter from './src_images/filter.png';
 import magnify from './src_images/magnify.png';
+import CurrentHouses from './CurrentHouses.js';
 
 
 const IMAGES_ARRAY = [
@@ -23,10 +24,6 @@ const IMAGES_ARRAY = [
 
 
 class Main extends Component {
-
-  componentDidMount() {
-    console.log('Main House Props: ', this.props.houseItems)
-  }
 
   chooseImage = (sqFeet) => {
     if(sqFeet <= 500){
@@ -264,31 +261,12 @@ class Main extends Component {
               </div>
             </div>
           </form>
-          
-          
-          <main role='main' className='container-fluid d-flex justify-content-center'>
-            <div className='card-group justify-content-center'>
-            
-              { 
-              
-              this.props.filteredHouseList.length === 0 ? <h2>No Houses Found!</h2> : 
-              
-              this.props.filteredHouseList.map((house) => {
-                return(
-                  <Card
-                    key={house.houseID}
-                    house={house}
-                    changePrice={this.props.changePrice}
-                    buyHouse={this.props.buyHouse}
-                    account={this.props.account}
-                  />
-                 
-                )
-              })}
-              
-            </div>
-          </main>
-        
+          <CurrentHouses
+            houseList = {this.props.filteredHouseList}
+            changePrice = {this.props.changePrice}
+            buyHouse = {this.props.buyHouse}
+            account = {this.props.account}
+          /> 
       </div>
     );
   }
