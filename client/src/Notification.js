@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Toast } from 'react-bootstrap';
 import Loader from 'react-loader-spinner'
+import checkmark from './src_images/checkmark.png';
 
 
 
@@ -46,7 +47,7 @@ class Notification extends Component {
                                 </>
                                 :   
                                 <>
-                                {this.props.trxStatus === 'Success' ? <b className='text-success ml-2'>Success</b> : 
+                                {this.props.trxStatus === 'Success' ? <><b className='text-success ml-2'>Success</b> <img src={checkmark} className='float-left' height='25' width='25' alt='checkmark'/> </> : 
                                     <>{this.props.trxStatus === 'Failed' ? <b className='text-danger ml-2'>Failed</b> : null }</>
                                 }
                                 </>
