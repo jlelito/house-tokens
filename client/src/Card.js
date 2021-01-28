@@ -39,37 +39,38 @@ class Card extends Component {
   
       return (
         <div> 
-            <main role="main" className="container-fluid d-flex justify-content-center" >
-              <div className="card-group justify-content-center" style={{ maxWidth: '375px' }}>
-                <div className="row">
-                  <div className="card mb-4 mx-4" >
-                    <div className="card-header">
+            <main role='main' className='container-fluid d-flex justify-content-center' >
+              <div className='card-group justify-content-center' style={{ maxWidth: '375px' }}>
+                <div className='row'>
+                  <div className='card mb-4 mx-4' >
+                    <div className='card-header'>
                       <img
                         className='mr-2 float-left rounded'
                         width='20'
                         height='20'
                         src={`data:house/png;base64,${new Identicon(this.props.house.owner, 30).toString()}`}
+                        alt='identicon'
                       />
-                      <small className="text-muted">{this.props.house.owner}</small>
+                      <small className='text-muted'>{this.props.house.owner}</small>
                     </div>
-                    <ul id="houseList" className="list-group list-group-flush">
-                      <li className="list-group-item">
-                        <p className="text-center"><img src={this.chooseImage(this.props.house.sqFeet)} style={{ maxWidth: '350px', maxHeight: '150px'}}/></p>
+                    <ul id='houseList' className='list-group list-group-flush'>
+                      <li className='list-group-item'>
+                        <p className='text-center'><img src={this.chooseImage(this.props.house.sqFeet)} style={{ maxWidth: '350px', maxHeight: '150px'}} alt='house'/></p>
                         <p>{this.props.house.homeAddress}</p>
                         <p>Square Feet: {this.props.house.sqFeet} sq/feet</p>
                         <p>Bedrooms: {this.props.house.bedrooms}</p>
                         <p>Bathrooms: {this.props.house.bathrooms}</p>
                       </li>
-                      <li  className="list-group-item py-2">
+                      <li  className='list-group-item py-2'>
                           
-                        <small className="float-left mt-1 text-muted">
-                          <b>Price: {window.web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25'/></b>
+                        <small className='float-left mt-1 text-muted'>
+                          <b>Price: {window.web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25' alt='eth-logo'/></b>
                         </small>
-                        {this.props.house.owner == this.props.account ? 
+                        {this.props.house.owner === this.props.account ? 
 
                         <>
                         <form 
-                          className="float-right"
+                          className='float-right'
                           onSubmit={(event) => {
                           event.preventDefault()
                           let newPrice
@@ -78,21 +79,21 @@ class Card extends Component {
                           this.inputAmount.value = null
                           
                         }}>
-                          <div className="input-group">
+                          <div className='input-group'>
                               
                                   <input
-                                      type="number"
+                                      type='number'
                                       ref={(inputAmount) => { this.inputAmount = inputAmount }}
-                                      className="form-control form-control-sm mr-1"
-                                      placeholder="0.0"
-                                      step=".01"
-                                      min="0"
+                                      className='form-control form-control-sm mr-1'
+                                      placeholder='0.0'
+                                      step='.01'
+                                      min='0'
                                       style={{ width: '55px' }}
                                       required 
                                   />
                               
-                              <span className="input-group-btn">
-                                  <button type="submit" className="btn btn-primary btn-sm" >
+                              <span className='input-group-btn'>
+                                  <button type='submit' className='btn btn-primary btn-sm' >
                                       Change Price
                                   </button>
                               </span>
@@ -102,7 +103,7 @@ class Card extends Component {
                         
                         : (
                           <button
-                            className="btn btn-primary btn-sm float-right pt-0 mt-1"
+                            className='btn btn-primary btn-sm float-right pt-0 mt-1'
                             name={this.props.house.houseID}
                             onClick={(event) => {
                               event.preventDefault()

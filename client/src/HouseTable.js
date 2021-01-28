@@ -8,9 +8,9 @@ class HouseTable extends Component {
 render() {
 
         return (
-            <table className="table table-striped table-hover mt-1">
+            <table className='table table-striped table-hover mt-1'>
             <caption>Owned Houses</caption>
-              <thead className="thead-light">
+              <thead className='thead-light'>
                           <tr>
                               <th>House ID</th>
                               <th>Address</th>
@@ -22,8 +22,8 @@ render() {
               </thead>
               <tbody>
               {this.props.houseTokenList.map(house => (
-                <tr className="justify-content-center" key={house.houseID}>
-                {this.props.account == house.owner ? (
+                <tr className='justify-content-center' key={house.houseID}>
+                {this.props.account === house.owner ? (
                         <>
                             <td>{house.houseID}
                               <img
@@ -31,11 +31,12 @@ render() {
                                 width='30'
                                 height='30'
                                 src={`data:house/png;base64,${new Identicon(this.props.account, 30).toString()}`}
+                                alt='identicon'
                               />
                             </td>
                             <td>{house.homeAddress}</td>
                             <td>{house.sqFeet} sq/ft</td>
-                            <td>{window.web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} className="float-right" width='20' height='20'/> </td>
+                            <td>{window.web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} className='float-right' width='20' height='20' alt='eth-logo'/> </td>
                             <td>{house.bedrooms}</td>
                             <td>{house.bathrooms}</td>
                         </>

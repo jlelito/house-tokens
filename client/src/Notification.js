@@ -55,7 +55,7 @@ class Notification extends Component {
                             }
                         </div>
                         Transaction:
-                        <a className='ml-2' href={`https://ropsten.etherscan.io/tx/${this.props.hash}`} target='_blank' rel='noreferrer'>
+                        <a className='ml-2' href={`https://ropsten.etherscan.io/tx/${this.props.hash}`} target='_blank' rel='noopener noreferrer'>
                             Etherscan.io
                         </a>
                         <div>Confirmations: {this.props.confirmNum}</div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import HouseToken from './contracts/House.json';
 import Main from './Main'
 import Navbar from './Navbar'
-import "./App.css";
+import './App.css';
 import smile from './src_images/smiley.jpg'
 import loadWeb3 from './utils.js';
 import MintHouse from './MintHouse.js';
@@ -14,7 +14,7 @@ import Notification from './Notification.js';
 
 class App extends Component {
   
-  async componentWillMount() {
+  async componentDidMount() {
     await loadWeb3()
     await this.loadBlockchainData()
     await this.updateHouses()
@@ -39,7 +39,6 @@ class App extends Component {
       this.setState({ houseToken : tokenContract })
       
       //Get House Token Balance and set to state. 
-      //Make sure to reset Metamask account and Network to refresh the contract (if balance is null)
       let currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
       
       this.setState({ houseTokenBalance: currentHouseTokenBalance })
@@ -63,7 +62,6 @@ class App extends Component {
   async updateHouses() {
     
     try{
-        console.log('Updating the Houses in updateHouses()')
         let length = await this.state.houseToken.methods.nextId().call()
         
         const houses = []
@@ -77,7 +75,6 @@ class App extends Component {
         let currentEthBalance = await window.web3.eth.getBalance(this.state.account)
         currentEthBalance = window.web3.utils.fromWei(currentEthBalance, 'Ether')
         this.setState({currentEthBalance: currentEthBalance})
-        console.log('Updated House List:', this.state.houseTokenList)
         this.setState({loading:false})
 
         } catch(e){
@@ -174,10 +171,6 @@ class App extends Component {
         this.setState({trxStatus: 'Pending'})
         this.showNotification()
         this.state.houseToken.events.boughtHouse({}, async (error, event) => {
-            let result = event.returnValues.homeAddress
-            let price = event.returnValues.price
-            let oldOwner = event.returnValues.owner
-            price = window.web3.utils.fromWei(price, 'Ether')
             await this.updateHouses()
              
         })
@@ -208,7 +201,6 @@ class App extends Component {
     //Changes the price of a house
     changePrice = (tokenId, newPrice) => {
       try{
-      const web3 = window.web3
       let ethPrice = window.web3.utils.toWei(newPrice, 'Ether')
       this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', async (hash) => {
          this.setState({hash:hash})
@@ -217,14 +209,7 @@ class App extends Component {
          this.showNotification()
       
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
-          console.log('Price Changed!!!')
-          
-          let targetID = event.returnValues.id
-          let oldPrice = event.returnValues.oldPrice
-          let newPrice = event.returnValues.newPrice
-          oldPrice = window.web3.utils.fromWei(oldPrice, 'Ether')
-          newPrice = window.web3.utils.fromWei(newPrice, 'Ether')
-                    
+          await this.updateHouses()
       })
       
         }).on('receipt', async (receipt) => {
@@ -236,7 +221,7 @@ class App extends Component {
           }
           console.log('Updating Houses for ChangePrice')
 
-          await this.updateHouses()
+          
           console.log('Houses updated')
 
         }).on('error', (error) => {
@@ -287,23 +272,28 @@ class App extends Component {
 
   render() {
     if(this.state.loading) {
+      window.ethereum.on('chainChanged', async => {
+        window.location.reload()
+      })
       return (
-        <div className="text-center">
-          <h1 className="text-center mt-5">Loading the Blockchain! Please connect to Ropsten Test Network!</h1> 
-          <img className="center-block" src={smile}></img>
+        <div className='text-center'>
+          <h1 className='text-center mt-5'>Loading the Blockchain! Please connect to Ropsten Test Network!</h1> 
+          <img className='center-block' src={smile} alt='smiley'></img>
         </div>
       )
     }
 
-    window.ethereum.on('accountsChanged', async accounts => {
+    window.ethereum.on('accountsChanged', accounts => {
       this.setState({account: accounts[0]})
       window.location.reload()
-      
-      
-    });
+    })
+
+    window.ethereum.on('chainChanged', async => {
+      window.location.reload()
+    })
 
     return (
-      <div className="App">
+      <div className='App'>
         <Navbar 
           account={this.state.account}
           currentBalance={this.state.houseTokenBalance}
@@ -313,16 +303,15 @@ class App extends Component {
           trxStatus={this.state.trxStatus}
         />
         <Notification 
-            showNotification={this.state.showNotification}
-            action={this.state.action}
-            hash={this.state.hash}
-            ref={this.notificationOne}
-            trxStatus={this.state.trxStatus}
-            confirmNum={this.state.confirmNum}
-            
+          showNotification={this.state.showNotification}
+          action={this.state.action}
+          hash={this.state.hash}
+          ref={this.notificationOne}
+          trxStatus={this.state.trxStatus}
+          confirmNum={this.state.confirmNum}
         />
         &nbsp;
-        <h1 className="mt-5" id="title">House Tokens</h1>
+        <h1 className='mt-5' id='title'>House Tokens</h1>
         <MintHouse
           account={this.state.account}
           admin={this.state.admin}
@@ -331,7 +320,7 @@ class App extends Component {
 
         <hr/>
          
-        <div className="row justify-content-center">
+        <div className='row justify-content-center'>
           <SendHouse
             account={this.state.account}
             houseTokenBalance = {this.state.houseTokenBalance}
@@ -339,8 +328,8 @@ class App extends Component {
             sendTokens = {this.sendTokens}
           />
 
-          <div className="col-lg-6 mr-4">
-            <h2 className="mb-4">Your Houses <img src={houselogo} width="60" height="60" alt="house logo" /></h2>
+          <div className='col-lg-6 mr-4'>
+            <h2 className='mb-4'>Your Houses <img src={houselogo} width='60' height='60' alt='house logo' /></h2>
             <HouseTable
               account={this.state.account}
               houseTokenList={this.state.houseTokenList}
