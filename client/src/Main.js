@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Card from './Card.js';
 import filter from './src_images/filter.png';
 import magnify from './src_images/magnify.png';
 import CurrentHouses from './CurrentHouses.js';
