@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Identicon from 'identicon.js';
-import ethlogo from './src_images/ETH.png';
+import ethlogo from '../src_images/ETH.png';
 import Web3 from 'web3';
 
 

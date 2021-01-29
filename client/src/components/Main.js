@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import filter from './src_images/filter.png';
-import magnify from './src_images/magnify.png';
+import filter from '../src_images/filter.png';
+import magnify from '../src_images/magnify.png';
 import CurrentHouses from './CurrentHouses.js';
 import Web3 from 'web3';
 

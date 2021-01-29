@@ -1,11 +1,8 @@
-
 import React, { Component } from 'react';
-import sendhouse from './src_images/sendhouse.jpg'
+import sendhouse from '../src_images/sendhouse.jpg'
 
 class SendHouse extends Component {
 
-    
-  
     render() {
   
       return (

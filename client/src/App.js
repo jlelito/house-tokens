@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import HouseToken from './contracts/House.json';
-import Main from './Main'
-import Navbar from './Navbar'
+import Main from './components/Main'
+import Navbar from './components/Navbar'
 import './App.css';
 import smile from './src_images/smiley.jpg'
-import MintHouse from './MintHouse.js';
-import HouseTable from './HouseTable';
-import SendHouse from './SendHouse';
+import MintHouse from './components/MintHouse.js';
+import HouseTable from './components/HouseTable';
+import SendHouse from './components/SendHouse';
 import houselogo from './src_images/houselogo.jpg';
-import Notification from './Notification.js';
+import Notification from './components/Notification.js';
 import Web3 from 'web3'
 
 

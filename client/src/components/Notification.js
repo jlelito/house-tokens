@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Toast } from 'react-bootstrap';
 import Loader from 'react-loader-spinner'
-import checkmark from './src_images/checkmark.png';
+import checkmark from '../src_images/checkmark.png';
 
 
 
