@@ -39,13 +39,13 @@ class SendHouse extends Component {
                       <select className='form-control form-control-lg' id='houseIDSelect' ref={(inputAmount) => { this.inputAmount = inputAmount }}>
                         {this.props.houseTokenList.map(house => (
                           
-                          <>
+                        <React.Fragment key={house.houseID}>
                             {this.props.account === house.owner ? (
                               <option key={house.houseID}>
                                 {house.houseID}
                               </option>
                             ) : null}
-                          </>
+                        </React.Fragment>
                           
                         ))}
                       </select>
