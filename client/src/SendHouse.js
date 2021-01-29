@@ -41,6 +41,7 @@ class SendHouse extends Component {
                       <label className='mx-2'>House ID</label>
                       <select className='form-control form-control-lg' id='houseIDSelect' ref={(inputAmount) => { this.inputAmount = inputAmount }}>
                         {this.props.houseTokenList.map(house => (
+                          
                           <>
                             {this.props.account === house.owner ? (
                               <option key={house.houseID}>
@@ -48,6 +49,7 @@ class SendHouse extends Component {
                               </option>
                             ) : null}
                           </>
+                          
                         ))}
                       </select>
                     </div>

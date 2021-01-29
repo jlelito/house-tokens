@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import Identicon from 'identicon.js';
 import ethlogo from './src_images/ETH.png';
+import Web3 from 'web3';
 
 
 class HouseTable extends Component {
 
-render() {
 
+render() {
+    const web3 = new Web3(window.ethereum)
         return (
             <table className='table table-striped table-hover mt-1'>
             <caption>Owned Houses</caption>
@@ -36,7 +38,7 @@ render() {
                             </td>
                             <td>{house.homeAddress}</td>
                             <td>{house.sqFeet} sq/ft</td>
-                            <td>{window.web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} className='float-right' width='20' height='20' alt='eth-logo'/> </td>
+                            <td>{web3.utils.fromWei(house.price, 'Ether')} ETH <img src={ethlogo} className='float-right' width='20' height='20' alt='eth-logo'/> </td>
                             <td>{house.bedrooms}</td>
                             <td>{house.bathrooms}</td>
                         </>

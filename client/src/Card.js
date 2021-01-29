@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ethlogo from './src_images/ETH.png';
 import Identicon from 'identicon.js';
+import Web3 from 'web3';
 
 const IMAGES_ARRAY = [
     {
@@ -36,6 +37,7 @@ class Card extends Component {
     }
   
     render() {
+      const web3 = new Web3(window.ethereum)
   
       return (
         <div> 
@@ -64,7 +66,7 @@ class Card extends Component {
                       <li  className='list-group-item py-2'>
                           
                         <small className='float-left mt-1 text-muted'>
-                          <b>Price: {window.web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25' alt='eth-logo'/></b>
+                          <b>Price: {web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25' alt='eth-logo'/></b>
                         </small>
                         {this.props.house.owner === this.props.account ? 
 

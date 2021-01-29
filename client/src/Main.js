@@ -3,6 +3,7 @@ import Card from './Card.js';
 import filter from './src_images/filter.png';
 import magnify from './src_images/magnify.png';
 import CurrentHouses from './CurrentHouses.js';
+import Web3 from 'web3';
 
 
 const IMAGES_ARRAY = [
@@ -75,7 +76,7 @@ class Main extends Component {
   }
 
   render() {
-
+    const web3 = new Web3(window.ethereum)
     return (
       <div className='resume-section'>
         
@@ -87,7 +88,7 @@ class Main extends Component {
                             bedrooms = this.bedroomsInputAmount.value.toString()
                             bathrooms = this.bathroomsInputAmount.value.toString()
                             sqFeetFilter = this.sqFeetInputAmount.value.toString()
-                            price = window.web3.utils.toWei(this.priceInputAmount.value.toString(), 'Ether')
+                            price = web3.utils.toWei(this.priceInputAmount.value.toString(), 'Ether')
                             searchInput = this.searchInput.value.toString()
                             
                             let filteredHouses = this.props.houseItems.filter(house => house.bedrooms >= parseInt(bedrooms)

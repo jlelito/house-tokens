@@ -4,26 +4,26 @@ import Main from './Main'
 import Navbar from './Navbar'
 import './App.css';
 import smile from './src_images/smiley.jpg'
-import loadWeb3 from './utils.js';
 import MintHouse from './MintHouse.js';
 import HouseTable from './HouseTable';
 import SendHouse from './SendHouse';
 import houselogo from './src_images/houselogo.jpg';
 import Notification from './Notification.js';
+import Web3 from 'web3'
 
 
 class App extends Component {
   
   async componentDidMount() {
-    await loadWeb3()
     await this.loadBlockchainData()
     await this.updateHouses()
   }
 
   //Loads all the blockchain data
   async loadBlockchainData() {
-    const web3 = window.web3
-  
+    console.log('Widnow Ethereum: ', window.ethereum)
+    const web3 = new Web3(window.ethereum)
+    console.log('Web3 Object: ', web3)
     const accounts = await web3.eth.getAccounts()
     this.setState({account: accounts[0]})
 
@@ -47,7 +47,7 @@ class App extends Component {
       this.setState({admin: contractAdmin})
 
       let currentEthBalance = await web3.eth.getBalance(accounts[0])
-      currentEthBalance = window.web3.utils.fromWei(currentEthBalance, 'Ether')
+      currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
       this.setState({currentEthBalance: currentEthBalance})
 
     } else {
@@ -60,7 +60,7 @@ class App extends Component {
   
     //Update the House Ids and Owner List
   async updateHouses() {
-    
+    const web3 = new Web3(window.ethereum)
     try{
         let length = await this.state.houseToken.methods.nextId().call()
         
@@ -72,8 +72,8 @@ class App extends Component {
         
         await this.setState({houseTokenList: houses})
         await this.setState({filteredHouseList: houses})
-        let currentEthBalance = await window.web3.eth.getBalance(this.state.account)
-        currentEthBalance = window.web3.utils.fromWei(currentEthBalance, 'Ether')
+        let currentEthBalance = await web3.eth.getBalance(this.state.account)
+        currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
         this.setState({currentEthBalance: currentEthBalance})
         this.setState({loading:false})
 
@@ -128,8 +128,8 @@ class App extends Component {
 
     //Mints House Tokens
     mintHouse = (houseAddress, squareFeet, price, bedrooms, bathrooms) => {
-      
-      let ethPrice = window.web3.utils.toWei(price, 'Ether')
+      const web3 = new Web3(window.ethereum)
+      let ethPrice = web3.utils.toWei(price, 'Ether')
       try{
       this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', async (hash) => {
         this.setState({hash:hash})
@@ -201,7 +201,8 @@ class App extends Component {
     //Changes the price of a house
     changePrice = (tokenId, newPrice) => {
       try{
-      let ethPrice = window.web3.utils.toWei(newPrice, 'Ether')
+      const web3 = new Web3(window.ethereum)
+      let ethPrice = web3.utils.toWei(newPrice, 'Ether')
       this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', async (hash) => {
          this.setState({hash:hash})
          this.setState({action: 'Changed Price'})
@@ -288,7 +289,7 @@ class App extends Component {
       window.location.reload()
     })
 
-    window.ethereum.on('chainChanged', async => {
+    window.ethereum.on('chainChanged', () => {
       window.location.reload()
     })
 

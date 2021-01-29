@@ -37,17 +37,19 @@ class CurrentHouses extends Component {
         <div className='container-fluid d-flex justify-content-center' id="owned-camps-container">
             <div className='card-group justify-content-center'>
               {this.state.currentHouses.map(house => (
-                <>   
-                    <div className='row' key={house.id}>
-                    <Card
-                        key={house.houseID}
-                        house={house}
-                        changePrice={this.props.changePrice}
-                        buyHouse={this.props.buyHouse}
-                        account={this.props.account}
-                    />
+                   
+                    <div className='row' key={house.houseID}>
+                    <>
+                        <Card
+                            key={house.houseID}
+                            house={house}
+                            changePrice={this.props.changePrice}
+                            buyHouse={this.props.buyHouse}
+                            account={this.props.account}
+                        />
+                    </>
                     </div>  
-                </>
+                
                 ))}
             </div>
         </div>
