@@ -21,13 +21,12 @@ class App extends Component {
 
   //Loads all the blockchain data
   async loadBlockchainData() {
-    console.log('Widnow Ethereum: ', window.ethereum)
     const web3 = new Web3(window.ethereum)
-    console.log('Web3 Object: ', web3)
+    this.setState({web3})
     const accounts = await web3.eth.getAccounts()
     this.setState({account: accounts[0]})
-
     const networkId = await web3.eth.net.getId()
+    console.log('Network: ', networkId)
     
     // Load HouseToken
     const houseTokenData = HouseToken.networks[networkId]
@@ -54,13 +53,10 @@ class App extends Component {
           window.alert('HouseToken contract not deployed to detected network. Please connect to Ropsten Network') 
     }
 
-    
-      
   }
   
     //Update the House Ids and Owner List
   async updateHouses() {
-    const web3 = new Web3(window.ethereum)
     try{
         let length = await this.state.houseToken.methods.nextId().call()
         
@@ -72,8 +68,8 @@ class App extends Component {
         
         await this.setState({houseTokenList: houses})
         await this.setState({filteredHouseList: houses})
-        let currentEthBalance = await web3.eth.getBalance(this.state.account)
-        currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
+        let currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
+        currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
         this.setState({currentEthBalance: currentEthBalance})
         this.setState({loading:false})
 
@@ -128,8 +124,7 @@ class App extends Component {
 
     //Mints House Tokens
     mintHouse = (houseAddress, squareFeet, price, bedrooms, bathrooms) => {
-      const web3 = new Web3(window.ethereum)
-      let ethPrice = web3.utils.toWei(price, 'Ether')
+      let ethPrice = this.state.web3.utils.toWei(price, 'Ether')
       try{
       this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', async (hash) => {
         this.setState({hash:hash})
@@ -201,8 +196,7 @@ class App extends Component {
     //Changes the price of a house
     changePrice = (tokenId, newPrice) => {
       try{
-      const web3 = new Web3(window.ethereum)
-      let ethPrice = web3.utils.toWei(newPrice, 'Ether')
+      let ethPrice = this.state.web3.utils.toWei(newPrice, 'Ether')
       this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', async (hash) => {
          this.setState({hash:hash})
          this.setState({action: 'Changed Price'})
@@ -254,6 +248,7 @@ class App extends Component {
       super(props)
       this.notificationOne = React.createRef()
       this.state = {
+        web3: null,
         account: '0x0',
         admin:'0x0',
         houseToken: {},
@@ -265,8 +260,8 @@ class App extends Component {
         hash: '0x0',
         action: null,
         wrongNetwork: false,
-        trxStatus:null,
-        confirmNum:0
+        trxStatus: null,
+        confirmNum: 0
       }
     }
     
