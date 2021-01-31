@@ -39,9 +39,9 @@ class Navbar extends Component {
             
             </div>
             <div id='account' className='row'>
-              <div className='bg-warning mr-3 p-1'>
+              <div className='bg-warning nav nav-pills mr-3 p-1'>
               {this.props.network === 3 ?
-                <span>Ropsten</span> : 
+                <span className='nav-item'>Ropsten</span> : 
                 this.props.network === 1 ? <span>Mainnet</span> :
                 this.props.network === 4 ? <span>Rinkeby</span> :
                 this.props.network === 5 ? <span>Goerli</span> :

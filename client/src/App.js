@@ -23,42 +23,9 @@ class App extends Component {
       window.ethereum.autoRefreshOnNetworkChange = false;
       let web3 = new Web3(window.ethereum)
       this.setState({web3})
+      await this.loadAccountData()
+      await this.loadContractData()
       
-      const accounts = await web3.eth.getAccounts()
-
-      if(typeof accounts[0] !== 'undefined' && accounts[0] !== null) {
-        let currentEthBalance = await web3.eth.getBalance(accounts[0])
-        currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
-        this.setState({account: accounts[0], currentEthBalance})
-      }
-
-      const networkId = await web3.eth.net.getId()
-      this.setState({network: networkId})
-
-      if(networkId !== 3) {
-        this.setState({wrongNetwork: true})
-        return null
-      }
-      
-      // Load HouseToken
-      const houseTokenData = HouseToken.networks[networkId]
-      if(houseTokenData) {
-        const abi = HouseToken.abi
-        const address = houseTokenData.address
-        //Load contract and set state
-        const tokenContract = new web3.eth.Contract(abi, address)
-        this.setState({ houseToken : tokenContract })
-        
-        //Get House Token Balance and set to state. 
-        let currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
-        
-        this.setState({ houseTokenBalance: currentHouseTokenBalance })
-        
-        let contractAdmin = await tokenContract.methods.admin().call()
-        this.setState({admin: contractAdmin})
-
-      }
-
       window.ethereum.on('accountsChanged', async (accounts) => {
         if(typeof accounts[0] !== 'undefined' & accounts[0] !== null) {
           let newEthBalance = await web3.eth.getBalance(accounts[0])
@@ -73,16 +40,14 @@ class App extends Component {
       })
 
       window.ethereum.on('chainChanged', async (chainId) => {
+        console.log('Chain Changed!')
         let newChainId = parseInt(chainId, 16)
         if(newChainId !== 3) {
-          let newEthBalance = await web3.eth.getBalance(accounts[0])
-          newEthBalance = web3.utils.fromWei(newEthBalance, 'Ether')
-          this.setState({network: newChainId, wrongNetwork: true, currentEthBalance: newEthBalance})
+          await this.loadAccountData()
+          this.setState({wrongNetwork: true})
         } else {
           if(this.state.account) {
-            let newEthBalance = await web3.eth.getBalance(accounts[0])
-            newEthBalance = web3.utils.fromWei(newEthBalance, 'Ether')
-            this.setState({currentEthBalance: newEthBalance})
+            await this.loadAccountData()
           }
           this.setState({network: newChainId, wrongNetwork: false})
           await this.updateHouses()
@@ -91,6 +56,47 @@ class App extends Component {
   }
 
   }
+
+  async loadContractData() {
+
+    // Load HouseToken
+    const houseTokenData = HouseToken.networks[this.state.network]
+    if(houseTokenData) {
+      const abi = HouseToken.abi
+      const address = houseTokenData.address
+      //Load contract and set state
+      const tokenContract = new this.state.web3.eth.Contract(abi, address)
+      this.setState({ houseToken : tokenContract })
+      
+      //Get House Token Balance and set to state. 
+      let currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
+      
+      this.setState({ houseTokenBalance: currentHouseTokenBalance })
+      
+      let contractAdmin = await tokenContract.methods.admin().call()
+      this.setState({admin: contractAdmin})
+}
+  }
+
+  async loadAccountData() {
+    let web3 = new Web3(window.ethereum)
+    const accounts = await web3.eth.getAccounts()
+
+    if(typeof accounts[0] !== 'undefined' && accounts[0] !== null) {
+      let currentEthBalance = await web3.eth.getBalance(accounts[0])
+      currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
+      this.setState({account: accounts[0], currentEthBalance})
+    }
+
+    const networkId = await web3.eth.net.getId()
+    this.setState({network: networkId})
+
+    if(networkId !== 3) {
+      this.setState({wrongNetwork: true})
+      return null
+    }
+}
+
   
     //Update the House Ids and Owner List
   async updateHouses() {
@@ -117,6 +123,7 @@ class App extends Component {
       }
     
 }
+
 
   //Sends tokens to a specified address
     sendTokens = (tokenId, address) => {
@@ -285,7 +292,7 @@ class App extends Component {
         currentEthBalance: '0',
         houseTokenList: [],
         filteredHouseList: [],
-        loading: true,
+        loading: false,
         hash: '0x0',
         action: null,
         wrongNetwork: false,
@@ -306,9 +313,12 @@ class App extends Component {
           network={this.state.network}
         />
         
-        {this.state.wrongNetwork ? <div className='row justify-content-center mt-5'><h1 className='mt-5'>Please connect to Ropsten!</h1>
-        <div>Current Network: {this.state.network}</div>
-        </div> :
+        {this.state.wrongNetwork ?
+        <>
+          <div className='row justify-content-center mt-5'><h1 className='mt-5'>Please connect to Ropsten!</h1></div> 
+          {/* <h2 className='row justify-content-center'>Current Network: {this.state.network}</h2> */}
+        </>
+         :
         <>
         <Notification 
           showNotification={this.state.showNotification}
