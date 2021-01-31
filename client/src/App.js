@@ -283,7 +283,7 @@ class App extends Component {
       this.notificationOne = React.createRef()
       this.state = {
         web3: null,
-        account: '0x0',
+        account: null,
         admin:'0x0',
         network: null,
         wrongNetwork: false,
@@ -306,17 +306,26 @@ class App extends Component {
 
     return (
       <div className='App'>
+        {this.state.account !== null ?
         <Navbar 
           account={this.state.account}
           currentBalance={this.state.houseTokenBalance}
           balance={this.state.currentEthBalance}
           network={this.state.network}
-        />
+        /> : null}
         
         {this.state.wrongNetwork ?
         <>
           <div className='row justify-content-center mt-5'><h1 className='mt-5'>Please connect to Ropsten!</h1></div> 
-          {/* <h2 className='row justify-content-center'>Current Network: {this.state.network}</h2> */}
+          <h2 className='row justify-content-center mt-4'>Current Network: 
+            {
+              this.state.network === 1 ? ' Mainnet' :
+              this.state.network === 4 ? ' Rinkeby' :
+              this.state.network === 5 ? ' Goerli' :
+              this.state.network === 42 ? ' Kovan':
+              <>{this.state.network}</>
+            }
+          </h2>
         </>
          :
         <>
@@ -328,8 +337,8 @@ class App extends Component {
           trxStatus={this.state.trxStatus}
           confirmNum={this.state.confirmNum}
         />
-        
-        <h1 className='mt-5' id='title'>House Tokens</h1>
+        <div className='row mt-5'></div>
+        <h1 className='mt-4' id='title'>House Tokens</h1>
         <MintHouse
           account={this.state.account}
           admin={this.state.admin}

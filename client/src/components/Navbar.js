@@ -26,7 +26,7 @@ class Navbar extends Component {
             <div className='text-secondary row'>
               <div id='account' className='text-white'>{this.props.account}</div>
             
-            {/* {this.props.account !== null
+            {this.props.account !== null
               ? <img
                 className='ml-2 float-right rounded'
                 width='30'
@@ -35,7 +35,7 @@ class Navbar extends Component {
                 alt='identicon'
               />
               : <span></span>
-            } */}
+            }
             
             </div>
             <div id='account' className='row'>
