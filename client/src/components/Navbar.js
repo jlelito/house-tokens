@@ -22,7 +22,7 @@ class Navbar extends Component {
             <div className='text-secondary row'>
               <div id='account' className='text-white'>{this.props.account}</div>
             
-            { this.props.account
+            {/* {this.props.account !== null
               ? <img
                 className='ml-2 float-right rounded'
                 width='30'
@@ -31,8 +31,20 @@ class Navbar extends Component {
                 alt='identicon'
               />
               : <span></span>
-            }</div>
+            } */}
+            
+            </div>
             <div id='account' className='row'>
+              <div className='bg-warning mr-3 p-1'>
+              {this.props.network === 3 ?
+                <span className='text-white'>Ropsten</span> : 
+                this.props.network === 4 ? <span>Rinkeby</span> :
+                this.props.network === 5 ? <span>Goerli</span> :
+                this.props.network === 42 ? <span>Kovan</span> : <span>Unknown Network : {this.props.network}</span>
+            
+              }
+              
+              </div>
               <div id='balance' className='text-white'>ETH Balance: {Number(this.props.balance).toFixed(3)} </div>
               <img className='mb-1' src={ethlogo} width='25' height='25' alt='ethlogo'/>
               <div className='text-white ml-2'>Ropsten Faucet: <a href='https://faucet.ropsten.be/' target='_blank' rel='noopener noreferrer'>Faucet</a></div>

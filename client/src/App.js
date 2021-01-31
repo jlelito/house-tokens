@@ -15,48 +15,86 @@ import Web3 from 'web3'
 class App extends Component {
   
   async componentDidMount() {
+    console.log('Mounting app.js')
     await this.loadBlockchainData()
     await this.updateHouses()
   }
 
   //Loads all the blockchain data
   async loadBlockchainData() {
-    const web3 = new Web3(window.ethereum)
-    this.setState({web3})
-    const accounts = await web3.eth.getAccounts()
-    this.setState({account: accounts[0]})
-    const networkId = await web3.eth.net.getId()
-    console.log('Network: ', networkId)
-    
-    // Load HouseToken
-    const houseTokenData = HouseToken.networks[networkId]
-    if(houseTokenData) {
-      const abi = HouseToken.abi
-      const address = houseTokenData.address
-      //Load contract and set state
-      const tokenContract = new web3.eth.Contract(abi, address)
-      this.setState({ houseToken : tokenContract })
+    console.log('Loading blockchain data...')
+    if(typeof window.ethereum!=='undefined' && !this.state.wrongNetwork) {
+      window.ethereum.autoRefreshOnNetworkChange = false;
+      const web3 = new Web3(window.ethereum)
+      this.setState({web3})
       
-      //Get House Token Balance and set to state. 
-      let currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
       
-      this.setState({ houseTokenBalance: currentHouseTokenBalance })
+      const accounts = await web3.eth.getAccounts()
+      if(typeof accounts[0] !== 'undefined' && accounts[0] !== null) {
+        let currentEthBalance = await web3.eth.getBalance(accounts[0])
+        currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
+        this.setState({account: accounts[0], currentEthBalance})
+        console.log('Account State: ', this.state.account)
+      }
+      const networkId = await web3.eth.net.getId()
+      this.setState({network: networkId})
+      console.log('Network State: ', this.state.network)
       
-      let contractAdmin = await tokenContract.methods.admin().call()
-      this.setState({admin: contractAdmin})
+      // Load HouseToken
+      const houseTokenData = HouseToken.networks[networkId]
+      if(houseTokenData) {
+        const abi = HouseToken.abi
+        const address = houseTokenData.address
+        //Load contract and set state
+        const tokenContract = new web3.eth.Contract(abi, address)
+        this.setState({ houseToken : tokenContract })
+        
+        //Get House Token Balance and set to state. 
+        let currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
+        
+        this.setState({ houseTokenBalance: currentHouseTokenBalance })
+        
+        let contractAdmin = await tokenContract.methods.admin().call()
+        this.setState({admin: contractAdmin})
 
-      let currentEthBalance = await web3.eth.getBalance(accounts[0])
-      currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
-      this.setState({currentEthBalance: currentEthBalance})
+      } else {
+            window.alert('HouseToken contract not deployed to detected network. Please connect to Ropsten Network') 
+      }
 
-    } else {
-          window.alert('HouseToken contract not deployed to detected network. Please connect to Ropsten Network') 
-    }
+      window.ethereum.on('accountsChanged', async (accounts) => {
+        if(typeof accounts[0] !== 'undefined' & accounts[0] !== null) {
+          let newEthBalance = await web3.eth.getBalance(accounts[0])
+          newEthBalance = web3.utils.fromWei(newEthBalance, 'Ether')
+          this.setState({account: accounts[0], currentEthBalance: newEthBalance})
+          console.log('New Account: ', this.state.account)
+        } else{
+          this.setState({account: null, currentEthBalance: 0})
+        }
+      })
+
+      window.ethereum.on('chainChanged', async (chainId) => {
+        let newChainId = parseInt(chainId, 16)
+        if(newChainId !== 4) {
+          this.setState({wrongNetwork: true})
+        } else {
+          if(this.state.account) {
+            let newEthBalance = await web3.eth.getBalance(accounts[0])
+            newEthBalance = web3.utils.fromWei(newEthBalance, 'Ether')
+            this.setState({currentEthBalance: newEthBalance})
+          }
+          this.setState({network: newChainId, wrongNetwork: false})
+        }
+      })
+
+
+
+  }
 
   }
   
     //Update the House Ids and Owner List
   async updateHouses() {
+    if(!this.state.wrongNetwork){
     try{
         let length = await this.state.houseToken.methods.nextId().call()
         
@@ -77,6 +115,7 @@ class App extends Component {
           this.setState({loading: true})
           window.alert('Cannot update houses! Error:', e.message)
         }
+      }
     
 }
 
@@ -142,7 +181,7 @@ class App extends Component {
         }
 
       }).on('error', (error) => {
-        window.alert('Error! Could not buy house!')
+        window.alert('Error! Could not create house!')
       }).on('confirmation', (confirmNum) => {
         if(confirmNum > 10) {
           this.setState({confirmNum : '10+'})
@@ -220,7 +259,7 @@ class App extends Component {
           console.log('Houses updated')
 
         }).on('error', (error) => {
-          window.alert('Error! Could not buy house!')
+          window.alert('Error! Could not change house price!')
         })
         .on('confirmation', (confirmNum) => {
           if(confirmNum > 10) {
@@ -251,6 +290,8 @@ class App extends Component {
         web3: null,
         account: '0x0',
         admin:'0x0',
+        network: null,
+        wrongNetwork: false,
         houseToken: {},
         houseTokenBalance: '0',
         currentEthBalance: '0',
@@ -267,37 +308,18 @@ class App extends Component {
     
 
   render() {
-    if(this.state.loading) {
-      window.ethereum.on('chainChanged', async => {
-        window.location.reload()
-      })
-      return (
-        <div className='text-center'>
-          <h1 className='text-center mt-5'>Loading the Blockchain! Please connect to Ropsten Test Network!</h1> 
-          <img className='center-block' src={smile} alt='smiley'></img>
-        </div>
-      )
-    }
-
-    window.ethereum.on('accountsChanged', accounts => {
-      this.setState({account: accounts[0]})
-      window.location.reload()
-    })
-
-    window.ethereum.on('chainChanged', () => {
-      window.location.reload()
-    })
 
     return (
       <div className='App'>
         <Navbar 
           account={this.state.account}
           currentBalance={this.state.houseTokenBalance}
-          hash={this.state.hash}
-          action={this.state.action}
           balance={this.state.currentEthBalance}
-          trxStatus={this.state.trxStatus}
+          network={this.state.network}
         />
+        
+        {this.state.wrongNetwork ? <h1>'Please connect to Ropsten!'</h1> :
+        <>
         <Notification 
           showNotification={this.state.showNotification}
           action={this.state.action}
@@ -306,7 +328,7 @@ class App extends Component {
           trxStatus={this.state.trxStatus}
           confirmNum={this.state.confirmNum}
         />
-        &nbsp;
+        
         <h1 className='mt-5' id='title'>House Tokens</h1>
         <MintHouse
           account={this.state.account}
@@ -333,10 +355,7 @@ class App extends Component {
           </div>
         </div>
         
-        &nbsp;
-        &nbsp;   
-        &nbsp;
-        &nbsp;
+
         <hr/>
               
         <Main 
@@ -347,7 +366,12 @@ class App extends Component {
           changePrice = {this.changePrice}
           filterHouses = {this.filterHouses}
         />
+        </>
+    
+  }
       </div>
+    
+    
     );
   }
 }
