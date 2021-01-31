@@ -318,7 +318,7 @@ class App extends Component {
           network={this.state.network}
         />
         
-        {this.state.wrongNetwork ? <h1>'Please connect to Ropsten!'</h1> :
+        {this.state.wrongNetwork ? <h1 className='row text-center'>'Please connect to Ropsten!'</h1> :
         <>
         <Notification 
           showNotification={this.state.showNotification}
