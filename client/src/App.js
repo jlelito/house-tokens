@@ -1,44 +1,44 @@
 import React, { Component } from 'react';
 import HouseToken from './contracts/House.json';
-import Main from './components/Main'
-import Navbar from './components/Navbar'
+import Main from './components/Main';
+import Navbar from './components/Navbar';
 import './App.css';
-import smile from './src_images/smiley.jpg'
 import MintHouse from './components/MintHouse.js';
 import HouseTable from './components/HouseTable';
 import SendHouse from './components/SendHouse';
 import houselogo from './src_images/houselogo.jpg';
 import Notification from './components/Notification.js';
-import Web3 from 'web3'
-
+import Web3 from 'web3';
 
 class App extends Component {
   
   async componentDidMount() {
-    console.log('Mounting app.js')
     await this.loadBlockchainData()
     await this.updateHouses()
   }
 
   //Loads all the blockchain data
   async loadBlockchainData() {
-    console.log('Loading blockchain data...')
     if(typeof window.ethereum!=='undefined' && !this.state.wrongNetwork) {
       window.ethereum.autoRefreshOnNetworkChange = false;
-      const web3 = new Web3(window.ethereum)
+      let web3 = new Web3(window.ethereum)
       this.setState({web3})
       
-      
       const accounts = await web3.eth.getAccounts()
+
       if(typeof accounts[0] !== 'undefined' && accounts[0] !== null) {
         let currentEthBalance = await web3.eth.getBalance(accounts[0])
         currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
         this.setState({account: accounts[0], currentEthBalance})
-        console.log('Account State: ', this.state.account)
       }
+
       const networkId = await web3.eth.net.getId()
       this.setState({network: networkId})
-      console.log('Network State: ', this.state.network)
+
+      if(networkId !== 3) {
+        this.setState({wrongNetwork: true})
+        return null
+      }
       
       // Load HouseToken
       const houseTokenData = HouseToken.networks[networkId]
@@ -57,8 +57,6 @@ class App extends Component {
         let contractAdmin = await tokenContract.methods.admin().call()
         this.setState({admin: contractAdmin})
 
-      } else {
-            window.alert('HouseToken contract not deployed to detected network. Please connect to Ropsten Network') 
       }
 
       window.ethereum.on('accountsChanged', async (accounts) => {
@@ -67,6 +65,8 @@ class App extends Component {
           newEthBalance = web3.utils.fromWei(newEthBalance, 'Ether')
           this.setState({account: accounts[0], currentEthBalance: newEthBalance})
           console.log('New Account: ', this.state.account)
+          await this.loadBlockchainData()
+          await this.updateHouses()
         } else{
           this.setState({account: null, currentEthBalance: 0})
         }
@@ -74,8 +74,10 @@ class App extends Component {
 
       window.ethereum.on('chainChanged', async (chainId) => {
         let newChainId = parseInt(chainId, 16)
-        if(newChainId !== 4) {
-          this.setState({wrongNetwork: true})
+        if(newChainId !== 3) {
+          let newEthBalance = await web3.eth.getBalance(accounts[0])
+          newEthBalance = web3.utils.fromWei(newEthBalance, 'Ether')
+          this.setState({network: newChainId, wrongNetwork: true, currentEthBalance: newEthBalance})
         } else {
           if(this.state.account) {
             let newEthBalance = await web3.eth.getBalance(accounts[0])
@@ -83,45 +85,39 @@ class App extends Component {
             this.setState({currentEthBalance: newEthBalance})
           }
           this.setState({network: newChainId, wrongNetwork: false})
+          await this.updateHouses()
         }
       })
-
-
-
   }
 
   }
   
     //Update the House Ids and Owner List
   async updateHouses() {
-    if(!this.state.wrongNetwork){
-    try{
-        let length = await this.state.houseToken.methods.nextId().call()
-        
-        const houses = []
-        for(let i=1; i<length; i++){
-          let currentHouse = await this.state.houseToken.methods.houses(i).call()
-          houses.push(currentHouse)
-        }
-        
-        await this.setState({houseTokenList: houses})
-        await this.setState({filteredHouseList: houses})
-        let currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
-        currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
-        this.setState({currentEthBalance: currentEthBalance})
-        this.setState({loading:false})
+    if(!this.state.wrongNetwork) {
+      try{
+            let length = await this.state.houseToken.methods.nextId().call()
+            
+            const houses = []
+            for(let i=1; i<length; i++){
+              let currentHouse = await this.state.houseToken.methods.houses(i).call()
+              houses.push(currentHouse)
+            }
+          
+            this.setState({houseTokenList: houses})
+            this.setState({filteredHouseList: houses})
+            let currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
+            currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
+            this.setState({currentEthBalance: currentEthBalance})
 
-        } catch(e){
-          this.setState({loading: true})
-          window.alert('Cannot update houses! Error:', e.message)
-        }
+          } catch(e){
+            window.alert('Cannot update houses! Error:', e.message)
+            
+          }
       }
     
 }
 
-
-
-    
   //Sends tokens to a specified address
     sendTokens = (tokenId, address) => {
       try{
@@ -148,7 +144,7 @@ class App extends Component {
             }
             }).on('error', (error) => {
               window.alert('Error')
-          }).on('confirmation', (confirmNum) => {
+            }).on('confirmation', (confirmNum) => {
             if(confirmNum > 10) {
               this.setState({confirmNum : '10+'})
             } else {
@@ -179,7 +175,6 @@ class App extends Component {
         else if(receipt.status === false){
           this.setState({trxStatus: 'Failed'})
         }
-
       }).on('error', (error) => {
         window.alert('Error! Could not create house!')
       }).on('confirmation', (confirmNum) => {
@@ -198,7 +193,7 @@ class App extends Component {
 
     //Buys house tokens from the card
      buyHouse = (tokenId, housePrice) => {
-      try{
+      try {
       this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
         this.setState({hash:hash})
         this.setState({action: 'Bought House'})
@@ -208,13 +203,13 @@ class App extends Component {
             await this.updateHouses()
              
         })
-      }).on('receipt', (receipt) => {
-          if(receipt.status === true){
-            this.setState({trxStatus: 'Success'})
-          }
-          else if(receipt.status === false){
-            this.setState({trxStatus: 'Failed'})
-          }
+          }).on('receipt', (receipt) => {
+            if(receipt.status === true){
+              this.setState({trxStatus: 'Success'})
+            }
+            else if(receipt.status === false){
+              this.setState({trxStatus: 'Failed'})
+            }
           }).on('error', (error) => {
             window.alert('Error! Could not buy house!')
           }).on('confirmation', (confirmNum) => {
@@ -245,7 +240,6 @@ class App extends Component {
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
           await this.updateHouses()
       })
-      
         }).on('receipt', async (receipt) => {
           if(receipt.status === true){
             this.setState({trxStatus: 'Success'})
@@ -253,26 +247,20 @@ class App extends Component {
           else if(receipt.status === false){
             this.setState({trxStatus: 'Failed'})
           }
-          console.log('Updating Houses for ChangePrice')
-
-          
-          console.log('Houses updated')
-
-        }).on('error', (error) => {
-          window.alert('Error! Could not change house price!')
-        })
-        .on('confirmation', (confirmNum) => {
-          if(confirmNum > 10) {
-            this.setState({confirmNum : '10+'})
-          } else{
-          this.setState({confirmNum})
-          }
-        })
+          }).on('error', (error) => {
+            window.alert('Error! Could not change house price!')
+          })
+          .on('confirmation', (confirmNum) => {
+            if(confirmNum > 10) {
+              this.setState({confirmNum : '10+'})
+            } else{
+            this.setState({confirmNum})
+            }
+          })
       }
       catch(e) {
         window.alert(e)
       }
-
     }
 
     showNotification = () => {
@@ -318,7 +306,9 @@ class App extends Component {
           network={this.state.network}
         />
         
-        {this.state.wrongNetwork ? <h1 className='row text-center'>'Please connect to Ropsten!'</h1> :
+        {this.state.wrongNetwork ? <div className='row justify-content-center mt-5'><h1 className='mt-5'>Please connect to Ropsten!</h1>
+        <div>Current Network: {this.state.network}</div>
+        </div> :
         <>
         <Notification 
           showNotification={this.state.showNotification}
