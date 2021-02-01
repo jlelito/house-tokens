@@ -39,14 +39,14 @@ class Navbar extends Component {
             
             </div>
             <div id='account' className='row'>
-              <div className='bg-warning nav nav-pills mr-3 p-1'>
+              <div className='mr-1'>
               {this.props.network === 3 ?
-                <span className='nav-item'>Ropsten</span> : 
-                this.props.network === 1 ? <span>Mainnet</span> :
-                this.props.network === 4 ? <span>Rinkeby</span> :
-                this.props.network === 5 ? <span>Goerli</span> :
-                this.props.network === 42 ? <span>Kovan</span> : <span>Unknown Network : {this.props.network}</span>
-            
+                <span className='badge badge-pill badge-warning'>Ropsten</span> : 
+                this.props.network === 1 ? <span className='badge badge-pill badge-warning'>Mainnet</span> :
+                this.props.network === 4 ? <span className='badge badge-pill badge-warning'>Rinkeby</span> :
+                this.props.network === 5 ? <span className='badge badge-pill badge-warning'>Goerli</span> :
+                this.props.network === 42 ? <span className='badge badge-pill badge-warning'>Kovan</span> :
+                <span className='badge badge-pill badge-warning'>Unknown Network : {this.props.network}</span>
               }
               
               </div>
