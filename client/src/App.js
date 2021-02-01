@@ -242,9 +242,9 @@ class App extends Component {
       this.notificationOne.current.updateShowNotify()
     }
 
-    filterHouses = (filteredHouseList) => {
+    filterHouses = async (filteredHouseList) => {
       console.log('Filtering Houses List: ', filteredHouseList)
-      this.setState({filteredHouseList})
+      await this.setState({filteredHouseList})
     }
 
     constructor(props) {

@@ -52,7 +52,7 @@ class Navbar extends Component {
               </div>
               <div id='balance' className='text-white'>ETH Balance: {Number(this.props.balance).toFixed(3)} </div>
               <img className='mb-1' src={ethlogo} width='25' height='25' alt='ethlogo'/>
-              <div className='text-white ml-2'>Ropsten Faucet: <a href='https://faucet.ropsten.be/' target='_blank' rel='noopener noreferrer'>Faucet</a></div>
+              <div className='text-white mx-2'>Ropsten Faucet: <a href='https://faucet.ropsten.be/' target='_blank' rel='noopener noreferrer'>Faucet</a></div>
             </div>
 
           </li>
