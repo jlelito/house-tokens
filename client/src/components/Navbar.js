@@ -39,7 +39,7 @@ class Navbar extends Component {
             
             </div>
             <div id='account' className='row'>
-              <div className='mr-1'>
+              <div className='mr-2'>
               {this.props.network === 3 ?
                 <span className='badge badge-pill badge-warning'>Ropsten</span> : 
                 this.props.network === 1 ? <span className='badge badge-pill badge-warning'>Mainnet</span> :
