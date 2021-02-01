@@ -10,49 +10,29 @@ import houselogo from './src_images/houselogo.jpg';
 import Notification from './components/Notification.js';
 import Web3 from 'web3';
 import WrongNetwork from './components/WrongNetwork';
+import Loading from './components/Loading';
 
 class App extends Component {
   
   async componentDidMount() {
     await this.loadBlockchainData()
-    
   }
 
   //Loads all the blockchain data
   async loadBlockchainData() {
-    if(typeof window.ethereum!=='undefined') {
-      console.log('Loading blockchain data')
-      window.ethereum.autoRefreshOnNetworkChange = true;
+    this.setState({loading: true})
+    if(typeof window.ethereum !== 'undefined') {
       let web3 = new Web3(window.ethereum)
       this.setState({web3})
       await this.loadAccountData()
       await this.loadContractData()
-      
-
-      if(this.state.network !== 3) {
-        this.setState({wrongNetwork: true})
-      }
       await this.updateHouses()
-      
-      window.ethereum.on('accountsChanged', async (accounts) => {
-        console.log('Accounts changing!')
-        if(typeof accounts[0] !== 'undefined' & accounts[0] !== null) {
-          await this.loadAccountData()
-          await this.updateHouses()
-        } else {
-          this.setState({account: null, currentEthBalance: 0})
-        }
-        
-      })
-
-      
-      console.log('End of blockchain data')
-  }
-  
-
+    }
+    this.setState({loading: false})
   }
 
   async loadAccountData() {
+    let connected = window.ethereum.isConnected()
     let web3 = new Web3(window.ethereum)
     const accounts = await web3.eth.getAccounts()
 
@@ -93,7 +73,6 @@ class App extends Component {
   //Update the House Ids and Owner List
   async updateHouses() {
     if(!this.state.wrongNetwork) {
-      console.log('Updating houses!')
       
             let length = await this.state.houseToken.methods.nextId().call()
             
@@ -277,6 +256,7 @@ class App extends Component {
         admin:'0x0',
         network: null,
         wrongNetwork: false,
+        loading: false,
         houseToken: {},
         houseTokenBalance: '0',
         currentEthBalance: '0',
@@ -297,6 +277,17 @@ class App extends Component {
       window.location.reload()
     })
 
+    window.ethereum.on('accountsChanged', async (accounts) => {
+      console.log('Accounts changing!')
+      if(typeof accounts[0] !== 'undefined' & accounts[0] !== null) {
+        await this.loadAccountData()
+        await this.updateHouses()
+      } else {
+        this.setState({account: null, currentEthBalance: 0})
+      }
+      
+    })
+
     return (
       <div className='App'>
         {this.state.account !== null ?
@@ -311,6 +302,9 @@ class App extends Component {
           <WrongNetwork 
             network = {this.state.network}
           />
+         : 
+         this.state.loading ?
+         <Loading /> 
          :
         <>
         <Notification 
