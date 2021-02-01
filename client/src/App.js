@@ -32,7 +32,6 @@ class App extends Component {
   }
 
   async loadAccountData() {
-    let connected = window.ethereum.isConnected()
     let web3 = new Web3(window.ethereum)
     const accounts = await web3.eth.getAccounts()
 
@@ -244,6 +243,7 @@ class App extends Component {
     }
 
     filterHouses = (filteredHouseList) => {
+      console.log('Filtering Houses List: ', filteredHouseList)
       this.setState({filteredHouseList})
     }
 

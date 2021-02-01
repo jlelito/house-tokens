@@ -25,6 +25,11 @@ const IMAGES_ARRAY = [
 
 class Main extends Component {
 
+  constructor(props) {
+    super(props)
+    this.paginate = React.createRef()
+  }
+
   chooseImage = (sqFeet) => {
     if(sqFeet <= 500){
       return IMAGES_ARRAY[0].img
@@ -80,23 +85,24 @@ class Main extends Component {
       <div className='resume-section'>
         
           
-        <form className='mb-3 form-inline' onSubmit={(event) => {
-                            event.preventDefault()
-                            let bedrooms, bathrooms, price, sqFeetFilter, searchInput
-                            
-                            bedrooms = this.bedroomsInputAmount.value.toString()
-                            bathrooms = this.bathroomsInputAmount.value.toString()
-                            sqFeetFilter = this.sqFeetInputAmount.value.toString()
-                            price = web3.utils.toWei(this.priceInputAmount.value.toString(), 'Ether')
-                            searchInput = this.searchInput.value.toString()
-                            
-                            let filteredHouses = this.props.houseItems.filter(house => house.bedrooms >= parseInt(bedrooms)
-                            && house.bathrooms >= parseInt(bathrooms)
-                            && house.sqFeet >= parseInt(sqFeetFilter)
-                            && house.price >= parseInt(price)
-                            && house.homeAddress.toLowerCase().includes(searchInput.toLowerCase())
-                            )
-                            this.props.filterHouses(filteredHouses)                                    
+        <form className='mb-3 form-inline' onSubmit={async (event) => {
+            event.preventDefault()
+            let bedrooms, bathrooms, price, sqFeetFilter, searchInput
+            
+            bedrooms = this.bedroomsInputAmount.value.toString()
+            bathrooms = this.bathroomsInputAmount.value.toString()
+            sqFeetFilter = this.sqFeetInputAmount.value.toString()
+            price = web3.utils.toWei(this.priceInputAmount.value.toString(), 'Ether')
+            searchInput = this.searchInput.value.toString()
+            
+            let filteredHouses = this.props.houseItems.filter(house => house.bedrooms >= parseInt(bedrooms)
+            && house.bathrooms >= parseInt(bathrooms)
+            && house.sqFeet >= parseInt(sqFeetFilter)
+            && house.price >= parseInt(price)
+            && house.homeAddress.toLowerCase().includes(searchInput.toLowerCase())
+            )
+            this.props.filterHouses(filteredHouses)
+            await this.paginate.current.paginate(1)                   
         }}>
         <div className='container'>
           <div className='form-row justify-content-center mb-1'>
@@ -229,16 +235,17 @@ class Main extends Component {
                 </div>
               </div>
           </form>
-
+          
           <form className='form-inline float-lg-right mr-5' onSubmit={(event) => {
-            event.preventDefault()
-            let selection = this.sortInputAmount.value.toString()
-            this.sortHouses(selection)
+              event.preventDefault()
+              let selection = this.sortInputAmount.value.toString()
+              this.sortHouses(selection)
+              this.paginate.current.paginate(1) 
             
             }}>
             <div className='form-group row'>
               <div className='col-12 mr-5'>
-                <label className=''>Sort by:</label>
+                <label>Sort by:</label>
                   <select className='form-control-sm mb-2 mr-1' id='houseSort' 
                     ref={(sortInputAmount) => { this.sortInputAmount = sortInputAmount }}
                   >
@@ -266,6 +273,7 @@ class Main extends Component {
             changePrice = {this.props.changePrice}
             buyHouse = {this.props.buyHouse}
             account = {this.props.account}
+            ref = {this.paginate}
           /> 
       </div>
     );

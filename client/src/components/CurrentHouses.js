@@ -8,7 +8,7 @@ class CurrentHouses extends Component {
         const indexOfLastPost = this.state.currentPage * this.state.postsPerPage
         const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage
         const currentPosts = this.props.houseList.slice(indexOfFirstPost, indexOfLastPost)
-        await this.setState({currentHouses: currentPosts})
+        this.setState({currentHouses: currentPosts})
     }
 
     constructor(props) {
@@ -23,42 +23,45 @@ class CurrentHouses extends Component {
 
     //Change Page
     async paginate (pageNumber) {
-        await this.setState({currentPage: pageNumber})
+        console.log('House List for Pagniation: ', this.props.houseList)
+        this.setState({currentPage: pageNumber})
         const indexOfLastPost = this.state.currentPage * this.state.postsPerPage
         const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage
         const currentPosts = this.props.houseList.slice(indexOfFirstPost, indexOfLastPost)
-        await this.setState({currentHouses: currentPosts})
+        console.log('Current Posts: ', currentPosts)
+        this.setState({currentHouses: currentPosts})
+        console.log('Paginated Houses: ', this.state.currentHouses)
     }
 
 
     render() {
         return (
         <>
-        <div className='container-fluid d-flex justify-content-center' id="owned-camps-container">
-            <div className='card-group justify-content-center'>
-              {this.state.currentHouses.map(house => (
-                   
-                    <div className='row' key={house.houseID}>
-                    <>
-                        <Card
-                            key={house.houseID}
-                            house={house}
-                            changePrice={this.props.changePrice}
-                            buyHouse={this.props.buyHouse}
-                            account={this.props.account}
-                        />
-                    </>
-                    </div>  
-                
-                ))}
+            <div className='container-fluid d-flex justify-content-center' id="owned-camps-container">
+                <div className='card-group justify-content-center'>
+                {this.state.currentHouses.map(house => (
+                    
+                        <div className='row' key={house.houseID}>
+                        <>
+                            <Card
+                                key={house.houseID}
+                                house={house}
+                                changePrice={this.props.changePrice}
+                                buyHouse={this.props.buyHouse}
+                                account={this.props.account}
+                            />
+                        </>
+                        </div>  
+                    
+                    ))}
+                </div>
             </div>
-        </div>
-        <PageNav 
-            postsPerPage={this.state.postsPerPage}
-            totalPosts={this.props.houseList.length}
-            paginate={this.paginate}
-            currentPage={this.state.currentPage}
-        />
+            <PageNav 
+                postsPerPage={this.state.postsPerPage}
+                totalPosts={this.props.houseList.length}
+                paginate={this.paginate}
+                currentPage={this.state.currentPage}
+            />
         </>
         )
     }
