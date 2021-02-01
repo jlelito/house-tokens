@@ -9,73 +9,47 @@ import SendHouse from './components/SendHouse';
 import houselogo from './src_images/houselogo.jpg';
 import Notification from './components/Notification.js';
 import Web3 from 'web3';
+import WrongNetwork from './components/WrongNetwork';
 
 class App extends Component {
   
   async componentDidMount() {
     await this.loadBlockchainData()
-    await this.updateHouses()
+    
   }
 
   //Loads all the blockchain data
   async loadBlockchainData() {
-    if(typeof window.ethereum!=='undefined' && !this.state.wrongNetwork) {
-      window.ethereum.autoRefreshOnNetworkChange = false;
+    if(typeof window.ethereum!=='undefined') {
+      console.log('Loading blockchain data')
+      window.ethereum.autoRefreshOnNetworkChange = true;
       let web3 = new Web3(window.ethereum)
       this.setState({web3})
       await this.loadAccountData()
       await this.loadContractData()
       
+
+      if(this.state.network !== 3) {
+        this.setState({wrongNetwork: true})
+      }
+      await this.updateHouses()
+      
       window.ethereum.on('accountsChanged', async (accounts) => {
+        console.log('Accounts changing!')
         if(typeof accounts[0] !== 'undefined' & accounts[0] !== null) {
-          let newEthBalance = await web3.eth.getBalance(accounts[0])
-          newEthBalance = web3.utils.fromWei(newEthBalance, 'Ether')
-          this.setState({account: accounts[0], currentEthBalance: newEthBalance})
-          console.log('New Account: ', this.state.account)
-          await this.loadBlockchainData()
+          await this.loadAccountData()
           await this.updateHouses()
-        } else{
+        } else {
           this.setState({account: null, currentEthBalance: 0})
         }
+        
       })
 
-      window.ethereum.on('chainChanged', async (chainId) => {
-        console.log('Chain Changed!')
-        let newChainId = parseInt(chainId, 16)
-        if(newChainId !== 3) {
-          await this.loadAccountData()
-          this.setState({wrongNetwork: true})
-        } else {
-          if(this.state.account) {
-            await this.loadAccountData()
-          }
-          this.setState({network: newChainId, wrongNetwork: false})
-          await this.updateHouses()
-        }
-      })
+      
+      console.log('End of blockchain data')
   }
+  
 
-  }
-
-  async loadContractData() {
-
-    // Load HouseToken
-    const houseTokenData = HouseToken.networks[this.state.network]
-    if(houseTokenData) {
-      const abi = HouseToken.abi
-      const address = houseTokenData.address
-      //Load contract and set state
-      const tokenContract = new this.state.web3.eth.Contract(abi, address)
-      this.setState({ houseToken : tokenContract })
-      
-      //Get House Token Balance and set to state. 
-      let currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
-      
-      this.setState({ houseTokenBalance: currentHouseTokenBalance })
-      
-      let contractAdmin = await tokenContract.methods.admin().call()
-      this.setState({admin: contractAdmin})
-}
   }
 
   async loadAccountData() {
@@ -91,17 +65,36 @@ class App extends Component {
     const networkId = await web3.eth.net.getId()
     this.setState({network: networkId})
 
-    if(networkId !== 3) {
+    if(this.state.network !== 3) {
       this.setState({wrongNetwork: true})
-      return null
     }
-}
 
+    
+  }
+
+// Load HouseToken Contract Data
+  async loadContractData() {
+    const houseTokenData = HouseToken.networks[3]
+    console.log('Loading House Token Data: ', houseTokenData)
+    if(houseTokenData) {
+      const abi = HouseToken.abi
+      const address = houseTokenData.address
+      //Load contract and set state
+      const tokenContract = new this.state.web3.eth.Contract(abi, address)
+      this.setState({ houseToken : tokenContract })
+      
+      //Get House Token Balance and Admin and set to state. 
+      let currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
+      let contractAdmin = await tokenContract.methods.admin().call()
+      this.setState({ houseTokenBalance: currentHouseTokenBalance, admin: contractAdmin })
+    }
+  }
   
-    //Update the House Ids and Owner List
+  //Update the House Ids and Owner List
   async updateHouses() {
     if(!this.state.wrongNetwork) {
-      try{
+      console.log('Updating houses!')
+      
             let length = await this.state.houseToken.methods.nextId().call()
             
             const houses = []
@@ -116,13 +109,10 @@ class App extends Component {
             currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
             this.setState({currentEthBalance: currentEthBalance})
 
-          } catch(e){
-            window.alert('Cannot update houses! Error:', e.message)
-            
           }
       }
     
-}
+
 
 
   //Sends tokens to a specified address
@@ -142,21 +132,21 @@ class App extends Component {
           })
           
           })
-          .on('receipt', (receipt) => {
-            if(receipt.status === true){
-              this.setState({trxStatus: 'Success'})
-            }
-            else if(receipt.status === false){
-              this.setState({trxStatus: 'Failed'})
-            }
+            .on('receipt', (receipt) => {
+              if(receipt.status === true){
+                this.setState({trxStatus: 'Success'})
+              }
+              else if(receipt.status === false){
+                this.setState({trxStatus: 'Failed'})
+              }
             }).on('error', (error) => {
               window.alert('Error')
             }).on('confirmation', (confirmNum) => {
-            if(confirmNum > 10) {
-              this.setState({confirmNum : '10+'})
-            } else {
-            this.setState({confirmNum})
-            }
+              if(confirmNum > 10) {
+                this.setState({confirmNum : '10+'})
+              } else {
+              this.setState({confirmNum})
+              }
           })
 
         } catch (e){
@@ -176,20 +166,20 @@ class App extends Component {
         await this.updateHouses()
         
       }).on('receipt', (receipt) => {
-        if(receipt.status === true){
-          this.setState({trxStatus: 'Success'})
-        }
-        else if(receipt.status === false){
-          this.setState({trxStatus: 'Failed'})
-        }
+          if(receipt.status === true){
+            this.setState({trxStatus: 'Success'})
+          }
+          else if(receipt.status === false){
+            this.setState({trxStatus: 'Failed'})
+          }
       }).on('error', (error) => {
-        window.alert('Error! Could not create house!')
+          window.alert('Error! Could not create house!')
       }).on('confirmation', (confirmNum) => {
-        if(confirmNum > 10) {
-          this.setState({confirmNum : '10+'})
-        } else{
-        this.setState({confirmNum})
-        }
+          if(confirmNum > 10) {
+            this.setState({confirmNum : '10+'})
+          } else{
+          this.setState({confirmNum})
+          }
       })
       } catch(e) {
         window.alert(e)
@@ -211,20 +201,20 @@ class App extends Component {
              
         })
           }).on('receipt', (receipt) => {
-            if(receipt.status === true){
-              this.setState({trxStatus: 'Success'})
-            }
-            else if(receipt.status === false){
-              this.setState({trxStatus: 'Failed'})
-            }
+              if(receipt.status === true){
+                this.setState({trxStatus: 'Success'})
+              }
+              else if(receipt.status === false){
+                this.setState({trxStatus: 'Failed'})
+              }
           }).on('error', (error) => {
-            window.alert('Error! Could not buy house!')
+              window.alert('Error! Could not buy house!')
           }).on('confirmation', (confirmNum) => {
-            if(confirmNum > 10) {
-              this.setState({confirmNum : '10+'})
-            } else{
-            this.setState({confirmNum})
-            }
+              if(confirmNum > 10) {
+                this.setState({confirmNum : '10+'})
+              } else{
+              this.setState({confirmNum})
+              }
           })
         }
       catch(e) {
@@ -248,21 +238,21 @@ class App extends Component {
           await this.updateHouses()
       })
         }).on('receipt', async (receipt) => {
-          if(receipt.status === true){
-            this.setState({trxStatus: 'Success'})
-          }
-          else if(receipt.status === false){
-            this.setState({trxStatus: 'Failed'})
-          }
+            if(receipt.status === true){
+              this.setState({trxStatus: 'Success'})
+            }
+            else if(receipt.status === false){
+              this.setState({trxStatus: 'Failed'})
+            }
           }).on('error', (error) => {
-            window.alert('Error! Could not change house price!')
+              window.alert('Error! Could not change house price!')
           })
           .on('confirmation', (confirmNum) => {
-            if(confirmNum > 10) {
-              this.setState({confirmNum : '10+'})
-            } else{
-            this.setState({confirmNum})
-            }
+              if(confirmNum > 10) {
+                this.setState({confirmNum : '10+'})
+              } else{
+              this.setState({confirmNum})
+              }
           })
       }
       catch(e) {
@@ -292,7 +282,6 @@ class App extends Component {
         currentEthBalance: '0',
         houseTokenList: [],
         filteredHouseList: [],
-        loading: false,
         hash: '0x0',
         action: null,
         wrongNetwork: false,
@@ -303,6 +292,10 @@ class App extends Component {
     
 
   render() {
+
+    window.ethereum.on('chainChanged', async (chainId) => {
+      window.location.reload()
+    })
 
     return (
       <div className='App'>
@@ -315,18 +308,9 @@ class App extends Component {
         /> : null}
         
         {this.state.wrongNetwork ?
-        <>
-          <div className='row justify-content-center mt-5'><h1 className='mt-5'>Please connect to Ropsten!</h1></div> 
-          <h2 className='row justify-content-center mt-4'>Current Network: 
-            {
-              this.state.network === 1 ? ' Mainnet' :
-              this.state.network === 4 ? ' Rinkeby' :
-              this.state.network === 5 ? ' Goerli' :
-              this.state.network === 42 ? ' Kovan':
-              <>{this.state.network}</>
-            }
-          </h2>
-        </>
+          <WrongNetwork 
+            network = {this.state.network}
+          />
          :
         <>
         <Notification 
