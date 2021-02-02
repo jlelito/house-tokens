@@ -47,8 +47,6 @@ class App extends Component {
     if(this.state.network !== 3) {
       this.setState({wrongNetwork: true})
     }
-
-    
   }
 
 // Load HouseToken Contract Data
@@ -80,13 +78,10 @@ class App extends Component {
               let currentHouse = await this.state.houseToken.methods.houses(i).call()
               houses.push(currentHouse)
             }
-          
-            this.setState({houseTokenList: houses})
-            this.setState({filteredHouseList: houses})
+
             let currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
             currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
-            this.setState({currentEthBalance: currentEthBalance})
-
+            await this.setState({houseTokenList: houses, filteredHouseList: houses, currentEthBalance: currentEthBalance})
           }
       }
     
@@ -99,9 +94,7 @@ class App extends Component {
           
           this.state.houseToken.methods.transferHouse(address, tokenId).send({ from: this.state.account }).on('transactionHash', async (hash) => {
            
-            this.setState({hash:hash})
-            this.setState({action: 'Sent House'})
-            this.setState({trxStatus: 'Pending'})
+            this.setState({hash:hash, action: 'Sent House', trxStatus: 'Pending'})
             this.showNotification()
             this.state.houseToken.events.sentHouse({}, async (error, event) => {
               await this.updateHouses()
@@ -137,9 +130,7 @@ class App extends Component {
       let ethPrice = this.state.web3.utils.toWei(price, 'Ether')
       try{
       this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', async (hash) => {
-        this.setState({hash:hash})
-        this.setState({action: 'Minted House'})
-        this.setState({trxStatus: 'Pending'})
+        this.setState({hash: hash, action: 'Minted House', trxStatus: 'Pending'})
         this.showNotification()
         await this.updateHouses()
         
@@ -207,11 +198,9 @@ class App extends Component {
       try{
       let ethPrice = this.state.web3.utils.toWei(newPrice, 'Ether')
       this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', async (hash) => {
-         this.setState({hash:hash})
-         this.setState({action: 'Changed Price'})
-         this.setState({trxStatus: 'Pending'})
+         this.setState({hash: hash, action: 'Changed Price', trxStatus: 'Pending'})
          this.showNotification()
-      
+
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
           await this.updateHouses()
       })
@@ -257,6 +246,7 @@ class App extends Component {
         network: null,
         wrongNetwork: false,
         loading: false,
+        walletUnlocked: null,
         houseToken: {},
         houseTokenBalance: '0',
         currentEthBalance: '0',
@@ -270,7 +260,6 @@ class App extends Component {
       }
     }
     
-
   render() {
 
     window.ethereum.on('chainChanged', async (chainId) => {
@@ -299,61 +288,58 @@ class App extends Component {
         /> : null}
         
         {this.state.wrongNetwork ?
-          <WrongNetwork 
-            network = {this.state.network}
-          />
-         : 
+          <WrongNetwork network = {this.state.network} /> 
+          :
          this.state.loading ?
-         <Loading /> 
-         :
-        <>
-        <Notification 
-          showNotification={this.state.showNotification}
-          action={this.state.action}
-          hash={this.state.hash}
-          ref={this.notificationOne}
-          trxStatus={this.state.trxStatus}
-          confirmNum={this.state.confirmNum}
-        />
-        <div className='row mt-5'></div>
-        <h1 className='mt-4' id='title'>House Tokens</h1>
-        <MintHouse
-          account={this.state.account}
-          admin={this.state.admin}
-          mintHouse={this.mintHouse}
-        />
-
-        <hr/>
-         
-        <div className='row justify-content-center'>
-          <SendHouse
+          <Loading /> 
+          :
+          <>
+          <Notification 
+            showNotification={this.state.showNotification}
+            action={this.state.action}
+            hash={this.state.hash}
+            ref={this.notificationOne}
+            trxStatus={this.state.trxStatus}
+            confirmNum={this.state.confirmNum}
+          />
+          <div className='row mt-5'></div>
+          <h1 className='mt-4' id='title'>House Tokens</h1>
+          <MintHouse
             account={this.state.account}
-            houseTokenBalance = {this.state.houseTokenBalance}
-            houseTokenList = {this.state.houseTokenList}
-            sendTokens = {this.sendTokens}
+            admin={this.state.admin}
+            mintHouse={this.mintHouse}
           />
 
-          <div className='col-lg-6 mr-4'>
-            <h2 className='mb-4'>Your Houses <img src={houselogo} width='60' height='60' alt='house logo' /></h2>
-            <HouseTable
+          <hr/>
+          
+          <div className='row justify-content-center'>
+            <SendHouse
               account={this.state.account}
-              houseTokenList={this.state.houseTokenList}
+              houseTokenBalance = {this.state.houseTokenBalance}
+              houseTokenList = {this.state.houseTokenList}
+              sendTokens = {this.sendTokens}
             />
-          </div>
-        </div>
-        
 
-        <hr/>
-              
-        <Main 
-          houseItems = {this.state.houseTokenList}
-          filteredHouseList = {this.state.filteredHouseList}
-          buyHouse = {this.buyHouse}
-          account = {this.state.account}
-          changePrice = {this.changePrice}
-          filterHouses = {this.filterHouses}
-        />
-        </>
+            <div className='col-lg-6 mr-4'>
+              <h2 className='mb-4'>Your Houses <img src={houselogo} width='60' height='60' alt='house logo' /></h2>
+              <HouseTable
+                account={this.state.account}
+                houseTokenList={this.state.houseTokenList}
+              />
+            </div>
+          </div>
+          
+          <hr/>
+                
+          <Main 
+            houseItems = {this.state.houseTokenList}
+            filteredHouseList = {this.state.filteredHouseList}
+            buyHouse = {this.buyHouse}
+            account = {this.state.account}
+            changePrice = {this.changePrice}
+            filterHouses = {this.filterHouses}
+          />
+          </>
     
   }
       </div>
