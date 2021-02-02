@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PageNav from './PageNav.js'
-import Card from './Card.js'
+import PageNav from './PageNav.js';
+import Card from './Card.js';
 
 class CurrentHouses extends Component {
 
@@ -23,16 +23,12 @@ class CurrentHouses extends Component {
 
     //Change Page
     async paginate (pageNumber) {
-        console.log('House List for Pagniation: ', this.props.houseList)
         await this.setState({currentPage: pageNumber})
         const indexOfLastPost = this.state.currentPage * this.state.postsPerPage
         const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage
         const currentPosts = this.props.houseList.slice(indexOfFirstPost, indexOfLastPost)
-        console.log('Current Posts: ', currentPosts)
         await this.setState({currentHouses: currentPosts})
-        console.log('Paginated Houses: ', this.state.currentHouses)
     }
-
 
     render() {
         return (
