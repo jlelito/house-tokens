@@ -6,10 +6,6 @@ import coloreth from '../src_images/eth-diamond-rainbow.png';
 
 class Navbar extends Component {
 
-  componentDidMount() {
-    console.log('Navbar account state: ', this.props.account)
-  }
-
   render() {
     return (
       <nav className='navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow'>
