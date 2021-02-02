@@ -20,6 +20,7 @@ class App extends Component {
 
   //Loads all the blockchain data
   async loadBlockchainData() {
+    console.log(window.ethereum)
     this.setState({loading: true})
     if(typeof window.ethereum !== 'undefined') {
       let web3 = new Web3(window.ethereum)
@@ -52,7 +53,6 @@ class App extends Component {
 // Load HouseToken Contract Data
   async loadContractData() {
     const houseTokenData = HouseToken.networks[3]
-    console.log('Loading House Token Data: ', houseTokenData)
     if(houseTokenData) {
       const abi = HouseToken.abi
       const address = houseTokenData.address
@@ -254,7 +254,6 @@ class App extends Component {
         filteredHouseList: [],
         hash: '0x0',
         action: null,
-        wrongNetwork: false,
         trxStatus: null,
         confirmNum: 0
       }
@@ -279,13 +278,13 @@ class App extends Component {
 
     return (
       <div className='App'>
-        {this.state.account !== null ?
+        
         <Navbar 
           account={this.state.account}
           currentBalance={this.state.houseTokenBalance}
           balance={this.state.currentEthBalance}
           network={this.state.network}
-        /> : null}
+        />
         
         {this.state.wrongNetwork ?
           <WrongNetwork network = {this.state.network} /> 

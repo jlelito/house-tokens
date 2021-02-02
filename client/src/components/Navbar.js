@@ -2,9 +2,18 @@ import React, { Component } from 'react';
 import Identicon from 'identicon.js';
 import ethlogo from '../src_images/ETH.png';
 import coloreth from '../src_images/eth-diamond-rainbow.png';
+import 'react-bootstrap';
+import { EthAddress, MetaMaskButton, Pill } from '../../node_modules/rimble-ui';
 
 
 class Navbar extends Component {
+
+
+  connectWallet () {
+    console.log('Connecting')
+    window.ethereum.request({ method: 'eth_requestAccounts' });
+  }
+
 
   render() {
     return (
@@ -35,15 +44,16 @@ class Navbar extends Component {
             
             </div>
             <div id='account' className='row'>
+              <MetaMaskButton.Outline size='small' onClick={() => this.connectWallet()}>Connect with Metamask</MetaMaskButton.Outline>
               <div className='mr-2'>
-              {this.props.network === 3 ?
-                <span className='badge badge-pill badge-warning'>Ropsten</span> : 
-                this.props.network === 1 ? <span className='badge badge-pill badge-warning'>Mainnet</span> :
-                this.props.network === 4 ? <span className='badge badge-pill badge-warning'>Rinkeby</span> :
-                this.props.network === 5 ? <span className='badge badge-pill badge-warning'>Goerli</span> :
-                this.props.network === 42 ? <span className='badge badge-pill badge-warning'>Kovan</span> :
-                <span className='badge badge-pill badge-warning'>Unknown Network : {this.props.network}</span>
-              }
+                {this.props.network === 3 ?
+                  <Pill color="green">Ropsten</Pill> : 
+                  this.props.network === 1 ? <span className='badge badge-pill badge-warning'>Mainnet</span> :
+                  this.props.network === 4 ? <span className='badge badge-pill badge-warning'>Rinkeby</span> :
+                  this.props.network === 5 ? <span className='badge badge-pill badge-warning'>Goerli</span> :
+                  this.props.network === 42 ? <span className='badge badge-pill badge-warning'>Kovan</span> :
+                  <Pill>Unknown Network : {this.props.network}</Pill>
+                }
               
               </div>
               <div id='balance' className='text-white'>ETH Balance: {Number(this.props.balance).toFixed(3)} </div>

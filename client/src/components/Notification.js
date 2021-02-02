@@ -6,6 +6,7 @@ import xmark from '../src_images/xmark.png';
 
 
 
+
 class Notification extends Component {
 
     updateShowNotify = () => this.setState({showA: true});
