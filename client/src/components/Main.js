@@ -4,7 +4,6 @@ import magnify from '../src_images/magnify.png';
 import CurrentHouses from './CurrentHouses.js';
 import Web3 from 'web3';
 
-
 const IMAGES_ARRAY = [
   {
     name: 'small house',
@@ -34,14 +33,12 @@ class Main extends Component {
     if(sqFeet <= 500){
       return IMAGES_ARRAY[0].img
     }
-    
     else if(sqFeet > 500 && sqFeet < 2000) {
       return IMAGES_ARRAY[1].img
     }
     else{
       return IMAGES_ARRAY[2].img
-    }
-    
+    } 
   }
 
   sortHouses = e => {
@@ -73,7 +70,7 @@ class Main extends Component {
       })
       this.props.filterHouses(sortedList)
     }
-
+    //Nothing selected
     else{
       console.log('Nothing Chosen!')
     }
@@ -83,8 +80,6 @@ class Main extends Component {
     const web3 = new Web3(window.ethereum)
     return (
       <div className='resume-section'>
-        
-          
         <form className='mb-3 form-inline' onSubmit={async (event) => {
             event.preventDefault()
             let bedrooms, bathrooms, price, sqFeetFilter, searchInput
@@ -96,10 +91,10 @@ class Main extends Component {
             searchInput = this.searchInput.value.toString()
             
             let filteredHouses = this.props.houseItems.filter(house => house.bedrooms >= parseInt(bedrooms)
-            && house.bathrooms >= parseInt(bathrooms)
-            && house.sqFeet >= parseInt(sqFeetFilter)
-            && house.price >= parseInt(price)
-            && house.homeAddress.toLowerCase().includes(searchInput.toLowerCase())
+              && house.bathrooms >= parseInt(bathrooms)
+              && house.sqFeet >= parseInt(sqFeetFilter)
+              && house.price >= parseInt(price)
+              && house.homeAddress.toLowerCase().includes(searchInput.toLowerCase())
             )
             this.props.filterHouses(filteredHouses)
             await this.paginate.current.paginate(1)                   
@@ -112,15 +107,12 @@ class Main extends Component {
                 <img src={magnify} className='float-right mt-1' width='35' height='35' alt='magnify'/>
                 <input className='form-control form-control' type='text' placeholder='Search...' ref={(searchInput) => { this.searchInput = searchInput }}
                   aria-label='Search'>
-                  
                 </input>
               </div>
-              
             </div>
             <div className='col-auto'>
               <label>Bedrooms</label>
-              <select className='form-control' id='houseFilterBedrooms' ref={(bedroomsInputAmount) => { this.bedroomsInputAmount = bedroomsInputAmount }}>
-                                    
+              <select className='form-control' id='houseFilterBedrooms' ref={(bedroomsInputAmount) => { this.bedroomsInputAmount = bedroomsInputAmount }}>               
                 <option value='0'>
                   Any
                 </option>
@@ -138,14 +130,12 @@ class Main extends Component {
                 </option>
                 <option value='5'>
                   5+
-                </option>
-                                    
+                </option>                  
               </select>
             </div>
             <div className='col-auto mr-2'>
               <label>Bathrooms</label>
-              <select className='form-control' id='houseFilterBathrooms' ref={(bathroomsInputAmount) => { this.bathroomsInputAmount = bathroomsInputAmount }}>
-                                      
+              <select className='form-control' id='houseFilterBathrooms' ref={(bathroomsInputAmount) => { this.bathroomsInputAmount = bathroomsInputAmount }}>                 
                 <option value='0'>
                   Any
                 </option>
@@ -163,14 +153,12 @@ class Main extends Component {
                 </option>
                 <option value='5'>
                   5+
-                </option>
-                                      
+                </option>              
               </select>
             </div>
             <div className='col-auto mr-2'>
               <label>Square Feet</label>
-              <select className='form-control' id='houseFilterSqFeet' ref={(sqFeetInputAmount) => { this.sqFeetInputAmount = sqFeetInputAmount }}>
-                                    
+              <select className='form-control' id='houseFilterSqFeet' ref={(sqFeetInputAmount) => { this.sqFeetInputAmount = sqFeetInputAmount }}>              
                 <option value='0'>
                   Any
                 </option>                 
@@ -188,14 +176,12 @@ class Main extends Component {
                 </option>
                 <option value='5000'>
                   5000+ sq/feet
-                </option>
-                                    
+                </option>                 
               </select>
             </div>
             <div className='col-auto'>
               <label>Price</label>
-              <select className='form-control' id='houseFilterBathrooms' ref={(priceInputAmount) => { this.priceInputAmount = priceInputAmount }}>
-                                    
+              <select className='form-control' id='houseFilterBathrooms' ref={(priceInputAmount) => { this.priceInputAmount = priceInputAmount }}>                  
                 <option value='0'>
                   Any
                 </option>
@@ -216,22 +202,21 @@ class Main extends Component {
                 </option>
                 <option value='10'>
                   10+ ETH
-                </option>
-                                    
+                </option>                   
               </select>
             </div>
-                  <div className='col-auto'>
-                    <button type='submit' className='btn btn-primary mt-4' >
-                      Filter
-                      <img
-                          className='ml-2 mt-1 float-right rounded'
-                          width='15'
-                          height='15'
-                          src={filter}
-                          alt='filter'
-                      />
-                    </button>
-                  </div>
+            <div className='col-auto'>
+              <button type='submit' className='btn btn-primary mt-4' >
+                Filter
+                <img
+                    className='ml-2 mt-1 float-right rounded'
+                    width='15'
+                    height='15'
+                    src={filter}
+                    alt='filter'
+                />
+              </button>
+            </div>
                 </div>
               </div>
           </form>
