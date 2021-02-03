@@ -334,7 +334,6 @@ if(window.ethereum != null) {
             <div className='col-lg-6 mr-4'>
               <h2 className='mb-4'>Your Houses <img src={houselogo} width='60' height='60' alt='house logo' /></h2>
               <HouseTable
-                isConnected={this.state.isConnected}
                 account={this.state.account}
                 houseTokenList={this.state.houseTokenList}
               />
