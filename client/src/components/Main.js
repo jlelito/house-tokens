@@ -79,7 +79,7 @@ class Main extends Component {
   render() {
     const web3 = new Web3(window.ethereum)
     return (
-      <div className='resume-section'>
+      <div className='resume-section mt-3'>
         <form className='mb-3 form-inline' onSubmit={async (event) => {
             event.preventDefault()
             let bedrooms, bathrooms, price, sqFeetFilter, searchInput
@@ -100,7 +100,7 @@ class Main extends Component {
             await this.paginate.current.paginate(1)                   
         }}>
         <div className='container'>
-          <div className='form-row justify-content-center mb-1'>
+          <div className='form-row justify-content-center'>
             <div className='col-auto'>
               <label>Search</label> 
               <div className='input-group'>

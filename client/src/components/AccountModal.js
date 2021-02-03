@@ -14,13 +14,13 @@ class AccountModal extends Component {
     closeModal = e => {
       e.preventDefault()
       this.setState({isOpen: false})
-    };
+    }
   
     openModal = e => {
       e.preventDefault()
       this.setState({isOpen: true})
-    };
-    // {this.props.account.substring(0,5) + '...' + '0x9505C8Fc1aD98b0aC651b91245d02D055fEc8E49'.slice(-4)}
+    }
+
   render() {
     return (
       <Box className='App'>

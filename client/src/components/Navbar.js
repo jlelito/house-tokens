@@ -32,30 +32,37 @@ class Navbar extends Component {
         <ul className='navbar-nav px-3'>
           <li className='nav-item text-nowrap d-none d-sm-none d-sm-block'>
             <div className='text-secondary row'>
-            <Pill className='mr-2 mt-1'>Network</Pill>
+            {this.props.network === 1 ? <Pill className='mr-2 my-2'>Mainnet</Pill>
+            : this.props.network === 3 ? <Pill color="green" className='mr-2 my-2'>Ropsten</Pill>
+            : this.props.network === 4 ? <Pill className='mr-2 my-2'>Rinkeby</Pill>
+            : this.props.network === 5 ? <Pill className='mr-2 my-2'>Goerli</Pill>
+            : this.props.network === 42 ? <Pill className='mr-2 my-2'>Kovan</Pill>
+            : <Pill className='mr-2 my-2'>Unknown Network</Pill>
+            }
             <>
             {!this.props.isConnected ? 
               <>
-                <Pill className='mr-2 my-2' color="red">Connect to a Wallet</Pill>
-                <MetaMaskButton.Outline className='my-2 mr-4' size='small' onClick={() => this.connectWallet()}>Connect with Metamask</MetaMaskButton.Outline>
+              <button className="bg-dark">
+                <Pill className='mr-2 my-2' color="red" onClick={() => this.connectWallet()}>Connect to a Wallet</Pill>
+              </button>
               </>
               :
               this.props.account !== null ?
               <>
-                <Pill className='mr-2 my-1' color="green">Connected</Pill>
+                <Pill className='mr-2 my-2' color="green">Connected</Pill>
                 <div id='balance' className='text-white mt-2'>{Number(this.props.balance).toFixed(3)} ETH</div>
-                <img className='mt-2' src={ethlogo} width='25' height='25' alt='ethlogo'/>
-                <div id='account' className='text-white float-right mt-1'>
+                <img className='my-2' src={ethlogo} width='25' height='25' alt='ethlogo'/>
+                <div id='account' className='text-white float-right my-2'>
                   <AccountModal account={this.props.account}/> 
                 </div>
                 <img
-                  className='mr-2 float-right rounded mt-1'
+                  className='mr-2 float-right rounded my-2'
                   width='30'
                   height='30'
                   src={`data:image/png;base64,${new Identicon(this.props.account, 30).toString()}`}
                   alt='identicon'
                 />
-                <div className='text-white mx-2 mt-2'>Ropsten Faucet: <a href='https://faucet.ropsten.be/' target='_blank' rel='noopener noreferrer'>Faucet</a></div>
+                <div className='text-white mx-2 my-2'>Ropsten Faucet: <a href='https://faucet.ropsten.be/' target='_blank' rel='noopener noreferrer'>Faucet</a></div>
               </> 
               : 
               <span></span>

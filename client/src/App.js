@@ -311,8 +311,11 @@ if(window.ethereum != null) {
             trxStatus={this.state.trxStatus}
             confirmNum={this.state.confirmNum}
           />
-          <div className='row mt-5'></div>
-          <h1 className='mt-4' id='title'>House Tokens</h1>
+          <div className='row mt-1'></div>
+          <h1 className='mt-2' id='title'>House Tokens</h1>
+          
+          {this.state.isConnected ?
+          <>
           <MintHouse
             account={this.state.account}
             admin={this.state.admin}
@@ -320,7 +323,6 @@ if(window.ethereum != null) {
           />
 
           <hr/>
-          
           <div className='row justify-content-center'>
             <SendHouse
               account={this.state.account}
@@ -332,13 +334,18 @@ if(window.ethereum != null) {
             <div className='col-lg-6 mr-4'>
               <h2 className='mb-4'>Your Houses <img src={houselogo} width='60' height='60' alt='house logo' /></h2>
               <HouseTable
+                isConnected={this.state.isConnected}
                 account={this.state.account}
                 houseTokenList={this.state.houseTokenList}
               />
             </div>
           </div>
-          
           <hr/>
+          </>
+          : null
+          }
+          
+          
                 
           <Main 
             houseItems = {this.state.houseTokenList}
