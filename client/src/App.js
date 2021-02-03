@@ -34,7 +34,6 @@ class App extends Component {
   async loadAccountData() {
     let web3 = new Web3(window.ethereum)
     const accounts = await web3.eth.getAccounts()
-    console.log('Accounts loadAccountData: ', accounts[0])
     if(typeof accounts[0] !== 'undefined' && accounts[0] !== null) {
       let currentEthBalance = await web3.eth.getBalance(accounts[0])
       currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
@@ -271,27 +270,17 @@ class App extends Component {
   render() {
 if(window.ethereum != null) {
 
-    window.ethereum.on('connect', async () => {
-      console.log('Connected!!!')
-    })
-
-    window.ethereum.on('disconnect', async () => {
-      console.log('DisConnected!!!')
-    })
-
     window.ethereum.on('chainChanged', async (chainId) => {
       window.location.reload()
     })
 
     window.ethereum.on('accountsChanged', async (accounts) => {
-      console.log('Accounts changing!')
       if(typeof accounts[0] !== 'undefined' & accounts[0] !== null) {
         await this.loadAccountData()
         await this.updateHouses()
       } else {
-        this.setState({account: null, currentEthBalance: 0})
+        this.setState({account: null, currentEthBalance: 0, isConnected: false})
       }
-      
     })
 
   }

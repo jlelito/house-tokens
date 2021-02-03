@@ -28,7 +28,7 @@ class AccountModal extends Component {
           <Button size="small" onClick={this.openModal}>{this.props.account.substring(0,5) + '...' + this.props.account.slice(-4)}</Button>
   
           <Modal isOpen={this.state.isOpen}>
-            <Card width={'420px'} p={0}>
+            <Card width={'520px'} p={0}>
               <Button.Text
                 icononly
                 icon={'Close'}
