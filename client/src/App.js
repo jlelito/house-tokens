@@ -38,9 +38,9 @@ class App extends Component {
     if(typeof accounts[0] !== 'undefined' && accounts[0] !== null) {
       let currentEthBalance = await web3.eth.getBalance(accounts[0])
       currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
-      this.setState({account: accounts[0], currentEthBalance, isConnected: true})
+      await this.setState({account: accounts[0], currentEthBalance, isConnected: true})
     } else {
-      this.setState({account: null, isConnected: false})
+      await this.setState({account: null, isConnected: false})
     }
 
     const networkId = await web3.eth.net.getId()

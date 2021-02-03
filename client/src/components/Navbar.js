@@ -3,17 +3,19 @@ import Identicon from 'identicon.js';
 import ethlogo from '../src_images/ETH.png';
 import coloreth from '../src_images/eth-diamond-rainbow.png';
 import 'react-bootstrap';
-import  { MetaMaskButton, Pill, Button }  from '../../node_modules/rimble-ui';
+import  { MetaMaskButton, Pill }  from '../../node_modules/rimble-ui';
+import AccountModal from '../components/AccountModal.js';
 
 
 class Navbar extends Component {
 
-
-  connectWallet () {
-    console.log('Connecting')
-    window.ethereum.request({ method: 'eth_requestAccounts' });
+  componentDidMount() {
+    console.log('Navbar account: ', this.props.account)
   }
 
+  connectWallet () {
+    window.ethereum.request({ method: 'eth_requestAccounts' });
+  }
 
   render() {
     return (
@@ -35,20 +37,20 @@ class Navbar extends Component {
             {this.props.account !== null
               ? 
               <>
-              <div id='account' className='text-white float-right mt-1'>{this.props.account}</div>
-              <img
-                className='ml-2 float-right rounded mt-1'
-                width='30'
-                height='30'
-                src={`data:image/png;base64,${new Identicon(this.props.account, 30).toString()}`}
-                alt='identicon'
-              />
+                <div id='account' className='text-white float-right mt-1'>
+                  <AccountModal account={this.props.account}/> 
+                </div>
+                <img
+                  className='mr-2 ml-1 float-right rounded mt-1'
+                  width='30'
+                  height='30'
+                  src={`data:image/png;base64,${new Identicon(this.props.account, 30).toString()}`}
+                  alt='identicon'
+                />
               </>
               : <span></span>
             }
             
-            </div>
-            <div id='account' className='row'>
             <>
             {!this.props.isConnected ? 
               <>
@@ -58,7 +60,7 @@ class Navbar extends Component {
               : 
               <>
                 <Pill className='mr-2 my-1' color="green">Connected</Pill>
-                <div id='balance' className='text-white my-1'>ETH Balance: {Number(this.props.balance).toFixed(3)}</div>
+                <div id='balance' className='text-white my-1'>{Number(this.props.balance).toFixed(3)} ETH</div>
                 <img className='my-1' src={ethlogo} width='25' height='25' alt='ethlogo'/>  
               </>
             }
