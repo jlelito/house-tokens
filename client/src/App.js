@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import HouseToken from './contracts/House.json';
-import Main from './components/Main';
-import Navbar from './components/Navbar';
+import Main from './components/Main.js';
+import Navbar from './components/Navbar.js';
 import './App.css';
 import MintHouse from './components/MintHouse.js';
 import HouseTable from './components/HouseTable';
-import SendHouse from './components/SendHouse';
+import SendHouse from './components/SendHouse.js';
 import houselogo from './src_images/houselogo.jpg';
 import Notification from './components/Notification.js';
 import Web3 from 'web3';
-import WrongNetwork from './components/WrongNetwork';
-import Loading from './components/Loading';
+import WrongNetwork from './components/WrongNetwork.js';
+import Loading from './components/Loading.js';
 
 class App extends Component {
   
@@ -20,7 +20,6 @@ class App extends Component {
 
   //Loads all the blockchain data
   async loadBlockchainData() {
-    console.log(window.ethereum)
     this.setState({loading: true})
     if(typeof window.ethereum !== 'undefined') {
       let web3 = new Web3(window.ethereum)
@@ -35,11 +34,13 @@ class App extends Component {
   async loadAccountData() {
     let web3 = new Web3(window.ethereum)
     const accounts = await web3.eth.getAccounts()
-
+    console.log('Accounts loadAccountData: ', accounts[0])
     if(typeof accounts[0] !== 'undefined' && accounts[0] !== null) {
       let currentEthBalance = await web3.eth.getBalance(accounts[0])
       currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
-      this.setState({account: accounts[0], currentEthBalance})
+      this.setState({account: accounts[0], currentEthBalance, isConnected: true})
+    } else {
+      this.setState({account: null, isConnected: false})
     }
 
     const networkId = await web3.eth.net.getId()
@@ -52,6 +53,7 @@ class App extends Component {
 
 // Load HouseToken Contract Data
   async loadContractData() {
+    let currentHouseTokenBalance, contractAdmin
     const houseTokenData = HouseToken.networks[3]
     if(houseTokenData) {
       const abi = HouseToken.abi
@@ -60,9 +62,13 @@ class App extends Component {
       const tokenContract = new this.state.web3.eth.Contract(abi, address)
       this.setState({ houseToken : tokenContract })
       
-      //Get House Token Balance and Admin and set to state. 
-      let currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
-      let contractAdmin = await tokenContract.methods.admin().call()
+      //Get House Token Balance and Admin and set to state.
+      if(this.state.account ===  null) {
+        currentHouseTokenBalance = 0
+      } else {
+        currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
+      }
+      contractAdmin = await tokenContract.methods.admin().call()
       this.setState({ houseTokenBalance: currentHouseTokenBalance, admin: contractAdmin })
     }
   }
@@ -70,7 +76,7 @@ class App extends Component {
   //Update the House Ids and Owner List
   async updateHouses() {
     if(!this.state.wrongNetwork) {
-      
+            let currentEthBalance
             let length = await this.state.houseToken.methods.nextId().call()
             
             const houses = []
@@ -78,9 +84,13 @@ class App extends Component {
               let currentHouse = await this.state.houseToken.methods.houses(i).call()
               houses.push(currentHouse)
             }
-
-            let currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
-            currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
+            
+            if(this.state.account ===  null) {
+              currentEthBalance = 0
+            } else {
+              currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
+              currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
+            }
             await this.setState({houseTokenList: houses, filteredHouseList: houses, currentEthBalance: currentEthBalance})
           }
       }
@@ -232,7 +242,6 @@ class App extends Component {
     }
 
     filterHouses = async (filteredHouseList) => {
-      console.log('Filtering Houses List: ', filteredHouseList)
       await this.setState({filteredHouseList})
     }
 
@@ -246,7 +255,7 @@ class App extends Component {
         network: null,
         wrongNetwork: false,
         loading: false,
-        walletUnlocked: null,
+        isConnected: null,
         houseToken: {},
         houseTokenBalance: '0',
         currentEthBalance: '0',
@@ -260,6 +269,15 @@ class App extends Component {
     }
     
   render() {
+if(window.ethereum != null) {
+
+    window.ethereum.on('connect', async () => {
+      console.log('Connected!!!')
+    })
+
+    window.ethereum.on('disconnect', async () => {
+      console.log('DisConnected!!!')
+    })
 
     window.ethereum.on('chainChanged', async (chainId) => {
       window.location.reload()
@@ -276,6 +294,8 @@ class App extends Component {
       
     })
 
+  }
+
     return (
       <div className='App'>
         
@@ -284,8 +304,9 @@ class App extends Component {
           currentBalance={this.state.houseTokenBalance}
           balance={this.state.currentEthBalance}
           network={this.state.network}
+          isConnected={this.state.isConnected}
         />
-        
+        <h1>Account: {this.state.account}</h1>
         {this.state.wrongNetwork ?
           <WrongNetwork network = {this.state.network} /> 
           :
