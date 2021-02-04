@@ -103,9 +103,9 @@ class Card extends Component {
                         </form> 
                         </>
                         
-                        : (
+                        : this.props.isConnected ?
                           <button
-                            className='btn btn-primary btn-sm float-right pt-0 mt-1'
+                            className='btn btn-success btn-sm float-right pt-0 mt-1'
                             name={this.props.house.houseID}
                             onClick={(event) => {
                               event.preventDefault()
@@ -116,8 +116,8 @@ class Card extends Component {
                             }}
                           >
                             Buy this House!
-                          </button>
-                        )}
+                          </button> : <span class="badge badge-danger float-right mt-2">Please connect a Wallet</span>
+                        }
                       </li>
                     </ul>
                   </div>

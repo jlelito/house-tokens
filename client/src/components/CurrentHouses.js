@@ -45,6 +45,7 @@ class CurrentHouses extends Component {
                                 changePrice={this.props.changePrice}
                                 buyHouse={this.props.buyHouse}
                                 account={this.props.account}
+                                isConnected = {this.props.isConnected}
                             />
                         </>
                         </div>  

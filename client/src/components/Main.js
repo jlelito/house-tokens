@@ -259,6 +259,7 @@ class Main extends Component {
             buyHouse = {this.props.buyHouse}
             account = {this.props.account}
             ref = {this.paginate}
+            isConnected = {this.props.isConnected}
           /> 
       </div>
     );

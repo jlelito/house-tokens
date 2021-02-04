@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
+import Web3 from 'web3';
 import HouseToken from './contracts/House.json';
 import Main from './components/Main.js';
 import Navbar from './components/Navbar.js';
 import './App.css';
 import MintHouse from './components/MintHouse.js';
-import HouseTable from './components/HouseTable';
+import HouseTable from './components/HouseTable.js';
 import SendHouse from './components/SendHouse.js';
 import houselogo from './src_images/houselogo.jpg';
 import Notification from './components/Notification.js';
-import Web3 from 'web3';
-import WrongNetwork from './components/WrongNetwork.js';
 import Loading from './components/Loading.js';
 import ConnectionBanner from '@rimble/connection-banner';
 
@@ -54,31 +53,36 @@ class App extends Component {
 // Load HouseToken Contract Data
   async loadContractData() {
     let currentHouseTokenBalance, contractAdmin
-    const houseTokenData = HouseToken.networks[3]
+    let houseTokenData = HouseToken.networks[3]
     if(houseTokenData) {
+      
       const abi = HouseToken.abi
       const address = houseTokenData.address
+
       //Load contract and set state
-      const tokenContract = new this.state.web3.eth.Contract(abi, address)
-      this.setState({ houseToken : tokenContract })
-      
+      const tokenContract = await new this.state.web3.eth.Contract(abi, address)
+      await this.setState({ houseToken : tokenContract })
+ 
+      let length = await this.state.houseToken.methods.nextId().call()
+       
       //Get House Token Balance and Admin and set to state.
-      if(this.state.account ===  null) {
-        currentHouseTokenBalance = 0
+      if(this.state.account ===  null || this.state.account === 'undefined') {
+        currentHouseTokenBalance = 0 
       } else {
-        currentHouseTokenBalance = await tokenContract.methods.balanceOf(this.state.account).call()
+        currentHouseTokenBalance = await this.state.houseToken.methods.balanceOf(this.state.account).call()
       }
-      contractAdmin = await tokenContract.methods.admin().call()
+      contractAdmin = await this.state.houseToken.methods.admin().call()
       this.setState({ houseTokenBalance: currentHouseTokenBalance, admin: contractAdmin })
     }
   }
   
+  
   //Update the House Ids and Owner List
   async updateHouses() {
-    if(!this.state.wrongNetwork) {
+    
             let currentEthBalance
             let length = await this.state.houseToken.methods.nextId().call()
-            
+
             const houses = []
             for(let i=1; i<length; i++){
               let currentHouse = await this.state.houseToken.methods.houses(i).call()
@@ -92,7 +96,7 @@ class App extends Component {
               currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
             }
             await this.setState({houseTokenList: houses, filteredHouseList: houses, currentEthBalance: currentEthBalance})
-          }
+          
       }
     
 
@@ -112,8 +116,7 @@ class App extends Component {
               this.setState({ houseTokenBalance: currentHouseTokenBalance })
           })
           
-          })
-            .on('receipt', (receipt) => {
+            }).on('receipt', (receipt) => {
               if(receipt.status === true){
                 this.setState({trxStatus: 'Success'})
               }
@@ -223,8 +226,7 @@ class App extends Component {
             }
           }).on('error', (error) => {
               window.alert('Error! Could not change house price!')
-          })
-          .on('confirmation', (confirmNum) => {
+          }).on('confirmation', (confirmNum) => {
               if(confirmNum > 10) {
                 this.setState({confirmNum : '10+'})
               } else{
@@ -268,7 +270,8 @@ class App extends Component {
       }
     }
     
-  render() {
+render() {
+
 if(window.ethereum != null) {
 
     window.ethereum.on('chainChanged', async (chainId) => {
@@ -296,20 +299,16 @@ if(window.ethereum != null) {
           network={this.state.network}
           isConnected={this.state.isConnected}
         />
-        
-        <h1>Account: {this.state.account}</h1>
+        <div className='mt-5' />
         {window.ethereum === null ?
-        <ConnectionBanner
-          className='mt-5'
-          currentNetwork={3}
-          requiredNetwork={1}
-          onWeb3Fallback={true}
-        />
-         : null}
-        {this.state.wrongNetwork ?
-          <WrongNetwork network = {this.state.network} /> 
+          <ConnectionBanner className='mt-5' currentNetwork={this.state.network} requiredNetwork={3} onWeb3Fallback={true} />
           :
-         this.state.loading ?
+          this.state.wrongNetwork ? <ConnectionBanner className='mt-5' currentNetwork={this.state.network} requiredNetwork={3} onWeb3Fallback={false} /> 
+          :
+          null
+        }
+          
+         {this.state.loading ?
           <Loading /> 
           :
           <>
@@ -353,9 +352,7 @@ if(window.ethereum != null) {
           </>
           : null
           }
-          
-          
-                
+           
           <Main 
             houseItems = {this.state.houseTokenList}
             filteredHouseList = {this.state.filteredHouseList}
@@ -363,6 +360,7 @@ if(window.ethereum != null) {
             account = {this.state.account}
             changePrice = {this.changePrice}
             filterHouses = {this.filterHouses}
+            isConnected = {this.state.isConnected}
           />
           </>
     
