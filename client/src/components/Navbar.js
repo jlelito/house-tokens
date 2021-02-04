@@ -3,15 +3,11 @@ import Identicon from 'identicon.js';
 import ethlogo from '../src_images/ETH.png';
 import coloreth from '../src_images/eth-diamond-rainbow.png';
 import 'react-bootstrap';
-import  { MetaMaskButton, Pill }  from '../../node_modules/rimble-ui';
+import  { Pill }  from '../../node_modules/rimble-ui';
 import AccountModal from '../components/AccountModal.js';
 
 
 class Navbar extends Component {
-
-  componentDidMount() {
-    console.log('Navbar account: ', this.props.account)
-  }
 
   connectWallet () {
     window.ethereum.request({ method: 'eth_requestAccounts' });
