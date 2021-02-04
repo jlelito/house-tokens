@@ -11,6 +11,7 @@ import Notification from './components/Notification.js';
 import Web3 from 'web3';
 import WrongNetwork from './components/WrongNetwork.js';
 import Loading from './components/Loading.js';
+import ConnectionBanner from '@rimble/connection-banner';
 
 class App extends Component {
   
@@ -295,7 +296,16 @@ if(window.ethereum != null) {
           network={this.state.network}
           isConnected={this.state.isConnected}
         />
+        
         <h1>Account: {this.state.account}</h1>
+        {window.ethereum === null ?
+        <ConnectionBanner
+          className='mt-5'
+          currentNetwork={3}
+          requiredNetwork={1}
+          onWeb3Fallback={true}
+        />
+         : null}
         {this.state.wrongNetwork ?
           <WrongNetwork network = {this.state.network} /> 
           :
