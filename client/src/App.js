@@ -20,23 +20,28 @@ class App extends Component {
 
   //Loads all the blockchain data
   async loadBlockchainData() {
+    let web3
+    
     this.setState({loading: true})
     if(typeof window.ethereum !== 'undefined') {
-      let web3 = new Web3(window.ethereum)
-      this.setState({web3})
+      web3 = new Web3(window.ethereum)
+      await this.setState({web3})
       await this.loadAccountData()
-      await this.loadContractData()
-      await this.updateHouses()
+    } else {
+      web3 = new Web3(new Web3.providers.HttpProvider(`https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`))
+      await this.setState({web3})
     }
+    await this.loadContractData()
+    await this.updateHouses()
     this.setState({loading: false})
   }
 
   async loadAccountData() {
-    let web3 = new Web3(window.ethereum)
-    const accounts = await web3.eth.getAccounts()
+    let web3 = new Web3(window.ethereum) 
+    const accounts = await this.state.web3.eth.getAccounts()
     if(typeof accounts[0] !== 'undefined' && accounts[0] !== null) {
-      let currentEthBalance = await web3.eth.getBalance(accounts[0])
-      currentEthBalance = web3.utils.fromWei(currentEthBalance, 'Ether')
+      let currentEthBalance = await this.state.web3.eth.getBalance(accounts[0])
+      currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
       await this.setState({account: accounts[0], currentEthBalance, isConnected: true})
     } else {
       await this.setState({account: null, isConnected: false})
@@ -58,13 +63,10 @@ class App extends Component {
       
       const abi = HouseToken.abi
       const address = houseTokenData.address
-
       //Load contract and set state
-      const tokenContract = await new this.state.web3.eth.Contract(abi, address)
+      const tokenContract = new this.state.web3.eth.Contract(abi, address)
       await this.setState({ houseToken : tokenContract })
  
-      let length = await this.state.houseToken.methods.nextId().call()
-       
       //Get House Token Balance and Admin and set to state.
       if(this.state.account ===  null || this.state.account === 'undefined') {
         currentHouseTokenBalance = 0 
@@ -74,12 +76,13 @@ class App extends Component {
       contractAdmin = await this.state.houseToken.methods.admin().call()
       this.setState({ houseTokenBalance: currentHouseTokenBalance, admin: contractAdmin })
     }
+
   }
   
   
   //Update the House Ids and Owner List
   async updateHouses() {
-    
+
             let currentEthBalance
             let length = await this.state.houseToken.methods.nextId().call()
 
