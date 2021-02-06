@@ -35,6 +35,11 @@ class Card extends Component {
       }
       
     }
+
+    connectWallet() {
+      window.ethereum.request({ method: 'eth_requestAccounts' });
+    }
+  
   
     render() {
       const web3 = new Web3(window.ethereum)
@@ -116,7 +121,7 @@ class Card extends Component {
                             }}
                           >
                             Buy this House!
-                          </button> : <span class="badge badge-danger float-right mt-2">Please connect a Wallet</span>
+                          </button> : <button onClick={() => this.connectWallet()} class="badge badge-danger float-right mt-2">Please connect a Wallet</button>
                         }
                       </li>
                     </ul>
