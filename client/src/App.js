@@ -66,7 +66,7 @@ class App extends Component {
       const address = houseTokenData.address
       //Load contract and set state
       const tokenContract = new this.state.web3.eth.Contract(abi, address)
-      await this.setState({ houseToken : tokenContract })
+      await this.setState({ houseToken : tokenContract, contractAddress: address })
  
       //Get House Token Balance and Admin and set to state.
       if(this.state.account ===  null || this.state.account === 'undefined') {
@@ -263,6 +263,7 @@ class App extends Component {
         loading: false,
         isConnected: null,
         houseToken: {},
+        contractAddress: null,
         houseTokenBalance: '0',
         currentEthBalance: '0',
         houseTokenList: [],
@@ -367,8 +368,13 @@ if(window.ethereum != null) {
             isConnected = {this.state.isConnected}
           />
           </>
-    
+
+          
   }
+          <div className='row justify-content-center'>
+            Contract on Etherscan.io: <a href={`https://ropsten.etherscan.io/address/${this.state.contractAddress}`} target='_blank' rel='noopener noreferrer'>Contract</a>
+          </div>
+    
       </div>
     
     
