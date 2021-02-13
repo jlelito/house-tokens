@@ -38,7 +38,7 @@ class Navbar extends Component {
             }
             
             <>
-            {!this.props.isConnected && window.ethereum !== window.ethereum === null && window.ethereum === undefined ? 
+            {!this.props.isConnected && window.ethereum !== null && window.ethereum !== undefined ? 
               <>
               <button className="bg-dark">
                 <Pill className='mr-2 my-2' color="red" onClick={() => this.connectWallet()}>Connect to a Wallet</Pill>
