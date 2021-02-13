@@ -9,7 +9,7 @@ import AccountModal from '../components/AccountModal.js';
 
 class Navbar extends Component {
 
-  connectWallet () {
+  connectWallet() {
     window.ethereum.request({ method: 'eth_requestAccounts' });
   }
 
@@ -28,15 +28,17 @@ class Navbar extends Component {
         <ul className='navbar-nav px-3'>
           <li className='nav-item text-nowrap d-none d-sm-none d-sm-block'>
             <div className='text-secondary row'>
-            {this.props.network === 1 ? <Pill className='mr-2 my-2'>Mainnet</Pill>
+            
+            {this.props.network === 1 ? <Pill className='mr-2 my-2' >Mainnet</Pill>
             : this.props.network === 3 ? <Pill color="green" className='mr-2 my-2'>Ropsten</Pill>
             : this.props.network === 4 ? <Pill className='mr-2 my-2'>Rinkeby</Pill>
             : this.props.network === 5 ? <Pill className='mr-2 my-2'>Goerli</Pill>
             : this.props.network === 42 ? <Pill className='mr-2 my-2'>Kovan</Pill>
             : <Pill className='mr-2 my-2'>Unknown Network</Pill>
             }
+            
             <>
-            {!this.props.isConnected ? 
+            {!this.props.isConnected && window.ethereum !== window.ethereum === null && window.ethereum === undefined ? 
               <>
               <button className="bg-dark">
                 <Pill className='mr-2 my-2' color="red" onClick={() => this.connectWallet()}>Connect to a Wallet</Pill>
