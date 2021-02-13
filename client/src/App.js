@@ -11,9 +11,9 @@ import houselogo from './src_images/houselogo.jpg';
 import Notification from './components/Notification.js';
 import Loading from './components/Loading.js';
 import ConnectionBanner from '@rimble/connection-banner';
+require('dotenv').config();
 
 class App extends Component {
-  
   async componentDidMount() {
     await this.loadBlockchainData()
   }
@@ -28,7 +28,8 @@ class App extends Component {
       await this.setState({web3})
       await this.loadAccountData()
     } else {
-      web3 = new Web3(new Web3.providers.HttpProvider(`https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`))
+      let infuraURL = `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_API_KEY}`
+      web3 = new Web3(new Web3.providers.HttpProvider(infuraURL))
       await this.setState({web3})
     }
     await this.loadContractData()
@@ -83,31 +84,31 @@ class App extends Component {
   //Update the House Ids and Owner List
   async updateHouses() {
 
-            let currentEthBalance
-            let length = await this.state.houseToken.methods.nextId().call()
-
-            const houses = []
-            for(let i=1; i<length; i++){
-              let currentHouse = await this.state.houseToken.methods.houses(i).call()
-              houses.push(currentHouse)
-            }
-            
-            if(this.state.account ===  null) {
-              currentEthBalance = 0
-            } else {
-              currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
-              currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
-            }
-            await this.setState({houseTokenList: houses, filteredHouseList: houses, currentEthBalance: currentEthBalance})
-          
+      let currentEthBalance
+      let length = await this.state.houseToken.methods.nextId().call()
+     
+      const houses = []
+      for(let i=1; i<length; i++){
+        let currentHouse = await this.state.houseToken.methods.houses(i).call()
+        houses.push(currentHouse)
       }
+      
+      if(this.state.account ===  null) {
+        currentEthBalance = 0
+      } else {
+        currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
+        currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
+      }
+      await this.setState({houseTokenList: houses, filteredHouseList: houses, currentEthBalance: currentEthBalance})
+        
+  }
     
 
 
 
   //Sends tokens to a specified address
     sendTokens = (tokenId, address) => {
-      try{
+      try {
           
           this.state.houseToken.methods.transferHouse(address, tokenId).send({ from: this.state.account }).on('transactionHash', async (hash) => {
            
@@ -144,7 +145,7 @@ class App extends Component {
     //Mints House Tokens
     mintHouse = (houseAddress, squareFeet, price, bedrooms, bathrooms) => {
       let ethPrice = this.state.web3.utils.toWei(price, 'Ether')
-      try{
+      try {
       this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', async (hash) => {
         this.setState({hash: hash, action: 'Minted House', trxStatus: 'Pending'})
         this.showNotification()
@@ -227,15 +228,15 @@ class App extends Component {
             else if(receipt.status === false){
               this.setState({trxStatus: 'Failed'})
             }
-          }).on('error', (error) => {
-              window.alert('Error! Could not change house price!')
-          }).on('confirmation', (confirmNum) => {
-              if(confirmNum > 10) {
-                this.setState({confirmNum : '10+'})
-              } else{
-              this.setState({confirmNum})
-              }
-          })
+        }).on('error', (error) => {
+            window.alert('Error! Could not change house price!')
+        }).on('confirmation', (confirmNum) => {
+            if(confirmNum > 10) {
+              this.setState({confirmNum : '10+'})
+            } else{
+            this.setState({confirmNum})
+            }
+        })
       }
       catch(e) {
         window.alert(e)
@@ -303,7 +304,7 @@ if(window.ethereum != null) {
           isConnected={this.state.isConnected}
         />
         <div className='mt-5' />
-        {window.ethereum === null ?
+        {window.ethereum === null || window.ethereum === undefined ?
           <ConnectionBanner className='mt-5' currentNetwork={this.state.network} requiredNetwork={3} onWeb3Fallback={true} />
           :
           this.state.wrongNetwork ? <ConnectionBanner className='mt-5' currentNetwork={this.state.network} requiredNetwork={3} onWeb3Fallback={false} /> 
