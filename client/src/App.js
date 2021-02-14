@@ -350,6 +350,7 @@ if(window.ethereum != null) {
               <HouseTable
                 account={this.state.account}
                 houseTokenList={this.state.houseTokenList}
+                web3={this.state.web3}
               />
             </div>
           </div>
