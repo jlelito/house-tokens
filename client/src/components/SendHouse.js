@@ -6,11 +6,11 @@ class SendHouse extends Component {
     render() {
   
       return (
-        <div className='col-sm-5'>
+        <div className='col-auto'>
             
             {this.props.houseTokenBalance === 0 ? <h2>No House Tokens Owned!</h2> : (
             <>
-            <h2 className='mb-4'>Send House Token
+            <h2 className='mb-3'>Send House Token
             <img src={sendhouse} className='ml-2' width='75' height='75' alt='send-house'/></h2> 
             <form className='mb-3' onSubmit={(event) => {
                   event.preventDefault()
@@ -22,9 +22,8 @@ class SendHouse extends Component {
                   this.targetAddress = null             
               }}>
                            
-                <div className='container'>
                   <div className='row justify-content-center'>
-                    <div className='form-group mb-4 col-9'>
+                    <div className='form-group mb-4 col-auto'>
                       <label className='mx-2'>Address</label>
                         <input
                         type='text'
@@ -34,7 +33,7 @@ class SendHouse extends Component {
                         required />
                     </div>
                     
-                    <div className='form-group mb-4 col-sm-3'>
+                    <div className='form-group mb-4 col-auto'>
                       <label className='mx-2'>House ID</label>
                       <select className='form-control form-control-lg' id='houseIDSelect' ref={(inputAmount) => { this.inputAmount = inputAmount }}>
                         {this.props.houseTokenList.map(house => (
@@ -51,10 +50,9 @@ class SendHouse extends Component {
                       </select>
                     </div>
                   </div>
-                  <button type='submit' className='btn btn-primary btn-lg col-md-2' >
+                  <button type='submit' className='btn btn-primary btn-lg col-auto' >
                       Send!
                   </button>
-                </div>   
               </form>
               </>
             )}

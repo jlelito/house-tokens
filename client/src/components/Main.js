@@ -217,12 +217,12 @@ class Main extends Component {
                 />
               </button>
             </div>
-                </div>
-              </div>
-          </form>
+            </div>
+          </div>
+        </form>
           
           
-            <div className='form-group row'>
+            <div className='form-group row float-right'>
               <div className='col-12 mr-5'>
                 <label className='mr-2'>Sort by:</label>
                 <select className='form-control-sm mb-2 mr-1' id='houseSort' 

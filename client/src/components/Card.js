@@ -121,7 +121,7 @@ class Card extends Component {
                             }}
                           >
                             Buy this House!
-                          </button> : <button onClick={() => this.connectWallet()} class="badge badge-danger float-right mt-2">Please connect a Wallet</button>
+                          </button> : <button onClick={() => this.connectWallet()} className="badge badge-danger float-right mt-2">Please connect a Wallet</button>
                         }
                       </li>
                     </ul>

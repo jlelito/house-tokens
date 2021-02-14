@@ -55,8 +55,8 @@ class Navbar extends Component {
                 </div>
                 <img
                   className='mr-2 float-right rounded my-2'
-                  width='30'
-                  height='30'
+                  width='32'
+                  height='32'
                   src={`data:image/png;base64,${new Identicon(this.props.account, 30).toString()}`}
                   alt='identicon'
                 />
