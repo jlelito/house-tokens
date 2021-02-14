@@ -368,13 +368,17 @@ if(window.ethereum != null) {
             filterHouses = {this.filterHouses}
             isConnected = {this.state.isConnected}
           />
+
+          <div className='row justify-content-left'>
+            <span className='ml-3'>Contract on Etherscan.io: </span> <a href={`https://ropsten.etherscan.io/address/${this.state.contractAddress}`} className='ml-1' target='_blank' rel='noopener noreferrer'>Contract</a>
+          </div>
           </>
 
           
+
+          
   }
-          <div className='row justify-content-center'>
-            Contract on Etherscan.io: <a href={`https://ropsten.etherscan.io/address/${this.state.contractAddress}`} target='_blank' rel='noopener noreferrer'>Contract</a>
-          </div>
+          
     
       </div>
     
