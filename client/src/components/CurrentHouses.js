@@ -30,14 +30,14 @@ class CurrentHouses extends Component {
         await this.setState({currentHouses: currentPosts})
     }
 
+    
     render() {
         return (
         <>
             <div className='container-fluid d-flex justify-content-center' id="owned-camps-container">
                 <div className='card-group justify-content-center'>
                 {this.state.currentHouses.map(house => (
-                    
-                        <div className='row' key={house.houseID}>
+                    <div className='row' key={house.houseID}>
                         <>
                             <Card
                                 key={house.houseID}
@@ -48,8 +48,7 @@ class CurrentHouses extends Component {
                                 isConnected = {this.props.isConnected}
                             />
                         </>
-                        </div>  
-                    
+                    </div>  
                     ))}
                 </div>
             </div>
@@ -59,6 +58,29 @@ class CurrentHouses extends Component {
                 paginate={this.paginate}
                 currentPage={this.state.currentPage}
             />
+            <div className='row float-right'>
+                <label className='mr-2'>Houses Per Page:</label>
+                <select className='form-control-sm mb-2 mr-5' id='housesPerPage' 
+                    ref={(housesPerPage) => { this.housesPerPage = housesPerPage }}
+                    onChange={() => {
+                        this.setState({postsPerPage: this.housesPerPage.value.toString()})
+                        this.paginate(1)
+                    }}
+                >
+                    <option value='3'>
+                        3
+                    </option>
+                    <option value='6'>
+                        6
+                    </option> 
+                    <option value='9'>
+                        9
+                    </option> 
+                    <option value='12'>
+                        12
+                    </option>                            
+                </select>
+            </div>
         </>
         )
     }
