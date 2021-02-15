@@ -52,7 +52,11 @@ class App extends Component {
     this.setState({network: networkId})
 
     if(this.state.network !== 3) {
+      let web3
       this.setState({wrongNetwork: true})
+      let infuraURL = `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_API_KEY}`
+      web3 = new Web3(new Web3.providers.HttpProvider(infuraURL))
+      await this.setState({web3})
     }
   }
 
