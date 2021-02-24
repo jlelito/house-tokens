@@ -10,9 +10,9 @@ contract House is ERC721Full {
     address payable royaltyCollector;
     string homeAddress;
     uint sqFeet;
-    uint256 price;
     uint bedrooms;
     uint bathrooms;
+    uint256 price;
     uint royalty;
   }
 
@@ -29,25 +29,24 @@ contract House is ERC721Full {
       admin = msg.sender;
   }
 
-  function mint(string memory _homeAddress, uint _sqFeet, uint256 _price, uint _royalty, uint _bedrooms, uint _bathrooms) public {
+  function mint(string memory _homeAddress, uint _sqFeet, uint _bedrooms, uint _bathrooms, uint256 _price, uint _royalty) public {
     require(!_houseExists[nextId], 'this house id already exists');
     require(msg.sender == admin, 'Must be Admin to mint House Tokens');
-    houses[nextId] = House(nextId, msg.sender, msg.sender, _homeAddress, _sqFeet, _price, _royalty, _bedrooms, _bathrooms);
+    require(_royalty <= 1000, 'Cannot have royalty more than 100%!');
+    houses[nextId] = House(nextId, msg.sender, msg.sender, _homeAddress, _sqFeet, _bedrooms, _bathrooms, _price, _royalty);
     _mint(msg.sender, nextId);
     _houseExists[nextId] = true;
     nextId+=1;
   }
 
-  function transferHouse(address payable to, uint houseID) public {
-    require(ownerOf(houseID) == msg.sender, 'you must own the house');
-    require(_houseExists[houseID], 'house does not exist!!');
-    _transferFrom(msg.sender, to, houseID);
-    address owner = ownerOf(houseID);
-    emit sentHouse(houseID, owner, to);
+  function transferHouse(address payable to, uint _id) mustOwnHouse(_id) public {
+    require(_houseExists[_id], 'house does not exist!!');
+    _transferFrom(msg.sender, to, _id);
+    houses[_id].owner = to;
+    emit sentHouse(_id, msg.sender, to);
   }
 
-  function changePrice(uint _id, uint newPrice) public {
-    require(ownerOf(_id) == msg.sender, 'you must own the house');
+  function changePrice(uint _id, uint newPrice) mustOwnHouse(_id) public {
     require(_houseExists[_id], 'house does not exist!!');
     //Store old house price
     uint oldPrice = houses[_id].price;
@@ -68,15 +67,25 @@ contract House is ERC721Full {
     address payable _seller = _house.owner;
     //Fetch the Royalty Collector
     address payable _collector = _house.royaltyCollector;
+    //Calculate Seller payment
+    uint sellerPayment = msg.value*(1-(_house.royalty / 1000));
+    //Calculate Royalty payment
+    uint royaltyPayment = msg.value*(_house.royalty / 1000);
     //Pay the seller by sending them Ether
-    address(_seller).transfer(msg.value*(1-_house.royalty));
+    address(_seller).transfer(sellerPayment);
     //Pay the royalty collector
-    address(_collector).transfer(msg.value*_house.royalty);
+    address(_collector).transfer(royaltyPayment);
     //Send the house token to new owner
     _transferFrom(_seller, msg.sender, _id);
     //Emit the image tipped event
     emit boughtHouse(_id, _seller, msg.sender, _house.homeAddress, _house.sqFeet, _house.price, _house.bedrooms, _house.bathrooms);
 
+  }
+
+
+  modifier mustOwnHouse(uint houseID) {
+    require(houses[houseID].owner == msg.sender, 'you must own the house');
+    _;
   }
 
 }
