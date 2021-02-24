@@ -72,6 +72,7 @@ class Card extends Component {
                           
                         <small className='float-left mt-1 text-muted'>
                           <b>Price: {web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25' alt='eth-logo'/></b>
+                          <b>Royalty %: {this.props.house.royalty} </b>
                         </small>
                         {this.props.house.owner === this.props.account ? 
 
