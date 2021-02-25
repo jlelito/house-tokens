@@ -70,15 +70,15 @@ class Card extends Component {
                       </li>
                       <li  className='list-group-item py-2'>
                           
-                        <small className='float-left mt-1 text-muted'>
-                          <b>Price: {web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25' alt='eth-logo'/></b>
-                          <b>Royalty %: {this.props.house.royalty} </b>
+                        <small className='float-left ml-3 text-muted'>
+                          <label className='row'><b>Price: {web3.utils.fromWei(this.props.house.price, 'Ether')} Ether<img src={ethlogo} width='25' height='25' alt='eth-logo'/></b></label>
+                          <label className='row'><b>Royalty: {this.props.house.royalty/10}% </b></label>
                         </small>
                         {this.props.house.owner === this.props.account ? 
 
                         <>
                         <form 
-                          className='float-right'
+                          className='float-right mt-2'
                           onSubmit={(event) => {
                           event.preventDefault()
                           let newPrice
