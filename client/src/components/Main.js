@@ -181,7 +181,7 @@ class Main extends Component {
             </div>
             <div className='col-auto'>
               <label>Price</label>
-              <select className='form-control' id='houseFilterBathrooms' ref={(priceInputAmount) => { this.priceInputAmount = priceInputAmount }}>                  
+              <select className='form-control' id='houseFilterPrice' ref={(priceInputAmount) => { this.priceInputAmount = priceInputAmount }}>                  
                 <option value='0'>
                   Any
                 </option>
