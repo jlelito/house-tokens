@@ -55,16 +55,6 @@ class AccountModal extends Component {
                     />
                 </a>
               </Box>
-  
-              <Flex
-                px={4}
-                py={3}
-                borderTop={1}
-                borderColor={'#E8E8E8'}
-                justifyContent={'flex-end'}
-              >
-
-              </Flex>
             </Card>
           </Modal>
         </Box>
