@@ -62,6 +62,7 @@ class App extends Component {
 
 // Load HouseToken Contract Data
   async loadContractData() {
+    
     let currentHouseTokenBalance, contractAdmin
     let houseTokenData = HouseToken.networks[3]
     if(houseTokenData) {
@@ -78,6 +79,7 @@ class App extends Component {
       } else {
         currentHouseTokenBalance = await this.state.houseToken.methods.balanceOf(this.state.account).call()
       }
+      
       contractAdmin = await this.state.houseToken.methods.admin().call()
       this.setState({ houseTokenBalance: currentHouseTokenBalance, admin: contractAdmin })
     }
@@ -87,7 +89,7 @@ class App extends Component {
   
   //Update the House Ids and Owner List
   async updateHouses() {
-
+    
       let currentEthBalance
       let length = await this.state.houseToken.methods.nextId().call()
      
@@ -147,10 +149,11 @@ class App extends Component {
     }
 
     //Mints House Tokens
-    mintHouse = (houseAddress, squareFeet, price, bedrooms, bathrooms) => {
+    mintHouse = (houseAddress, squareFeet, price, royalty, bedrooms, bathrooms) => {
       let ethPrice = this.state.web3.utils.toWei(price, 'Ether')
+      let adjustedRoyalty = royalty*10
       try {
-      this.state.houseToken.methods.mint(houseAddress, squareFeet, ethPrice, bedrooms, bathrooms).send({ from: this.state.account }).on('transactionHash', async (hash) => {
+      this.state.houseToken.methods.mint(houseAddress, squareFeet, bedrooms, bathrooms, ethPrice, adjustedRoyalty).send({ from: this.state.account }).on('transactionHash', async (hash) => {
         this.setState({hash: hash, action: 'Minted House', trxStatus: 'Pending'})
         this.showNotification()
         await this.updateHouses()
