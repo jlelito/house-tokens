@@ -1,4 +1,4 @@
-import { Box, Flex, Modal, Button, Text, Card, Heading, EthAddress, Icon } from 'rimble-ui';
+import { Box, Modal, Button, Text, Card, Heading, EthAddress, Icon } from 'rimble-ui';
 import React, { Component,  } from 'react';
 
 class AccountModal extends Component {
