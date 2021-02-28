@@ -24,6 +24,11 @@ const IMAGES_ARRAY = [
 
 class Main extends Component {
 
+  componentDidMount() {
+    this.sortHouses('squareFt')
+    this.paginate.current.paginate(1)
+  }
+
   constructor(props) {
     super(props)
     this.paginate = React.createRef()
