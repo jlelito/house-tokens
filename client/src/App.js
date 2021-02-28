@@ -89,8 +89,6 @@ class App extends Component {
   
   //Update the House Ids and Owner List
   async updateHouses() {
-    
-      let currentEthBalance
       let length = await this.state.houseToken.methods.nextId().call()
      
       const houses = []
@@ -99,14 +97,7 @@ class App extends Component {
         houses.push(currentHouse)
       }
       
-      if(this.state.account ===  null) {
-        currentEthBalance = 0
-      } else {
-        currentEthBalance = await this.state.web3.eth.getBalance(this.state.account)
-        currentEthBalance = this.state.web3.utils.fromWei(currentEthBalance, 'Ether')
-      }
-      await this.setState({houseTokenList: houses, filteredHouseList: houses, currentEthBalance: currentEthBalance})
-        
+      await this.setState({houseTokenList: houses, filteredHouseList: houses})   
   }
     
 
@@ -121,6 +112,7 @@ class App extends Component {
             this.setState({hash:hash, action: 'Sent House', trxStatus: 'Pending'})
             this.showNotification()
             this.state.houseToken.events.sentHouse({}, async (error, event) => {
+              await this.loadAccountData()
               await this.updateHouses()
               let currentHouseTokenBalance = await this.state.houseToken.methods.balanceOf(this.state.account).call()
               this.setState({ houseTokenBalance: currentHouseTokenBalance })
@@ -156,6 +148,7 @@ class App extends Component {
       this.state.houseToken.methods.mint(houseAddress, squareFeet, bedrooms, bathrooms, ethPrice, adjustedRoyalty).send({ from: this.state.account }).on('transactionHash', async (hash) => {
         this.setState({hash: hash, action: 'Minted House', trxStatus: 'Pending'})
         this.showNotification()
+        await this.loadAccountData()
         await this.updateHouses()
         
       }).on('receipt', (receipt) => {
@@ -190,6 +183,7 @@ class App extends Component {
         this.setState({trxStatus: 'Pending'})
         this.showNotification()
         this.state.houseToken.events.boughtHouse({}, async (error, event) => {
+            await this.loadAccountData()
             await this.updateHouses()
              
         })
@@ -226,6 +220,7 @@ class App extends Component {
          this.showNotification()
 
         this.state.houseToken.events.changedPrice({}, async (error, event) => {
+          await this.loadAccountData()
           await this.updateHouses()
       })
         }).on('receipt', async (receipt) => {
@@ -386,11 +381,8 @@ if(window.ethereum != null) {
 
           
   }
-          
-    
+              
       </div>
-    
-    
     );
   }
 }
