@@ -310,6 +310,7 @@ if(window.ethereum != null) {
           balance={this.state.currentEthBalance}
           network={this.state.network}
           isConnected={this.state.isConnected}
+          trxStatus={this.state.trxStatus}
         />
         <div className='mt-5' />
         {window.ethereum === null || window.ethereum === undefined ?
