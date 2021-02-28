@@ -221,7 +221,19 @@ class Main extends Component {
                     alt='filter'
                 />
               </button>
+              
             </div>
+            <button type='button' className='btn btn-primary mt-4' onClick={() =>
+              {
+                this.sqFeetInputAmount.value = 0
+                this.bathroomsInputAmount.value = 0
+                this.bedroomsInputAmount.value = 0
+                this.priceInputAmount.value = 0
+                this.searchInput.value = null
+              }
+            }>
+                Reset
+            </button>
             </div>
           </div>
         </form>
