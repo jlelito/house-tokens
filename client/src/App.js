@@ -13,6 +13,7 @@ import Loading from './components/Loading.js';
 import ConnectionBanner from '@rimble/connection-banner';
 require('dotenv').config();
 
+/* Primary App Component */
 class App extends Component {
   async componentDidMount() {
     await this.loadBlockchainData()
@@ -37,6 +38,7 @@ class App extends Component {
     this.setState({loading: false})
   }
 
+  //Loads user account data
   async loadAccountData() {
     let web3 = new Web3(window.ethereum) 
     const accounts = await this.state.web3.eth.getAccounts()
@@ -106,35 +108,33 @@ class App extends Component {
   //Sends tokens to a specified address
     sendTokens = (tokenId, address) => {
       try {
-          
-          this.state.houseToken.methods.transferHouse(address, tokenId).send({ from: this.state.account }).on('transactionHash', async (hash) => {
-           
-            this.setState({hash:hash, action: 'Sent House', trxStatus: 'Pending'})
-            this.showNotification()
-            this.state.houseToken.events.sentHouse({}, async (error, event) => {
-              await this.loadAccountData()
-              await this.updateHouses()
-              let currentHouseTokenBalance = await this.state.houseToken.methods.balanceOf(this.state.account).call()
-              this.setState({ houseTokenBalance: currentHouseTokenBalance })
-          })
-          
-            }).on('receipt', (receipt) => {
-              if(receipt.status === true){
-                this.setState({trxStatus: 'Success'})
-              }
-              else if(receipt.status === false){
-                this.setState({trxStatus: 'Failed'})
-              }
-            }).on('error', (error) => {
-              window.alert('Error')
-            }).on('confirmation', (confirmNum) => {
-              if(confirmNum > 10) {
-                this.setState({confirmNum : '10+'})
-              } else {
-              this.setState({confirmNum})
-              }
-          })
-
+            this.state.houseToken.methods.transferHouse(address, tokenId).send({ from: this.state.account }).on('transactionHash', async (hash) => {
+            
+              this.setState({hash:hash, action: 'Sent House', trxStatus: 'Pending'})
+              this.showNotification()
+              this.state.houseToken.events.sentHouse({}, async (error, event) => {
+                await this.loadAccountData()
+                await this.updateHouses()
+                let currentHouseTokenBalance = await this.state.houseToken.methods.balanceOf(this.state.account).call()
+                this.setState({ houseTokenBalance: currentHouseTokenBalance })
+            })
+            
+              }).on('receipt', (receipt) => {
+                if(receipt.status === true){
+                  this.setState({trxStatus: 'Success'})
+                }
+                else if(receipt.status === false){
+                  this.setState({trxStatus: 'Failed'})
+                }
+              }).on('error', (error) => {
+                window.alert('Error')
+              }).on('confirmation', (confirmNum) => {
+                if(confirmNum > 10) {
+                  this.setState({confirmNum : '10+'})
+                } else {
+                this.setState({confirmNum})
+                }
+            })
         } catch (e){
           window.alert(e)
         }
@@ -145,28 +145,28 @@ class App extends Component {
       let ethPrice = this.state.web3.utils.toWei(price, 'Ether')
       let adjustedRoyalty = royalty*10
       try {
-      this.state.houseToken.methods.mint(houseAddress, squareFeet, bedrooms, bathrooms, ethPrice, adjustedRoyalty).send({ from: this.state.account }).on('transactionHash', async (hash) => {
-        this.setState({hash: hash, action: 'Minted House', trxStatus: 'Pending'})
-        this.showNotification()
-        await this.loadAccountData()
-        await this.updateHouses()
-        
-      }).on('receipt', (receipt) => {
-          if(receipt.status === true){
-            this.setState({trxStatus: 'Success'})
-          }
-          else if(receipt.status === false){
-            this.setState({trxStatus: 'Failed'})
-          }
-      }).on('error', (error) => {
-          window.alert('Error! Could not create house!')
-      }).on('confirmation', (confirmNum) => {
-          if(confirmNum > 10) {
-            this.setState({confirmNum : '10+'})
-          } else{
-          this.setState({confirmNum})
-          }
-      })
+          this.state.houseToken.methods.mint(houseAddress, squareFeet, bedrooms, bathrooms, ethPrice, adjustedRoyalty).send({ from: this.state.account }).on('transactionHash', async (hash) => {
+            this.setState({hash: hash, action: 'Minted House', trxStatus: 'Pending'})
+            this.showNotification()
+            await this.loadAccountData()
+            await this.updateHouses()
+            
+          }).on('receipt', (receipt) => {
+              if(receipt.status === true){
+                this.setState({trxStatus: 'Success'})
+              }
+              else if(receipt.status === false){
+                this.setState({trxStatus: 'Failed'})
+              }
+          }).on('error', (error) => {
+              window.alert('Error! Could not create house!')
+          }).on('confirmation', (confirmNum) => {
+              if(confirmNum > 10) {
+                this.setState({confirmNum : '10+'})
+              } else{
+              this.setState({confirmNum})
+              }
+          })
       } catch(e) {
         window.alert(e)
       }
@@ -177,32 +177,32 @@ class App extends Component {
     //Buys house tokens from the card
      buyHouse = (tokenId, housePrice) => {
       try {
-      this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
-        this.setState({hash:hash})
-        this.setState({action: 'Bought House'})
-        this.setState({trxStatus: 'Pending'})
-        this.showNotification()
-        this.state.houseToken.events.boughtHouse({}, async (error, event) => {
-            await this.loadAccountData()
-            await this.updateHouses()
-             
-        })
-          }).on('receipt', (receipt) => {
-              if(receipt.status === true){
-                this.setState({trxStatus: 'Success'})
-              }
-              else if(receipt.status === false){
-                this.setState({trxStatus: 'Failed'})
-              }
-          }).on('error', (error) => {
-              window.alert('Error! Could not buy house!')
-          }).on('confirmation', (confirmNum) => {
-              if(confirmNum > 10) {
-                this.setState({confirmNum : '10+'})
-              } else{
-              this.setState({confirmNum})
-              }
-          })
+          this.state.houseToken.methods.buyHouse(tokenId).send({ from: this.state.account, value: housePrice }).on('transactionHash', (hash) => {
+            this.setState({hash:hash})
+            this.setState({action: 'Bought House'})
+            this.setState({trxStatus: 'Pending'})
+            this.showNotification()
+            this.state.houseToken.events.boughtHouse({}, async (error, event) => {
+                await this.loadAccountData()
+                await this.updateHouses()
+                
+            })
+              }).on('receipt', (receipt) => {
+                  if(receipt.status === true){
+                    this.setState({trxStatus: 'Success'})
+                  }
+                  else if(receipt.status === false){
+                    this.setState({trxStatus: 'Failed'})
+                  }
+              }).on('error', (error) => {
+                  window.alert('Error! Could not buy house!')
+              }).on('confirmation', (confirmNum) => {
+                  if(confirmNum > 10) {
+                    this.setState({confirmNum : '10+'})
+                  } else{
+                  this.setState({confirmNum})
+                  }
+              })
         }
       catch(e) {
         window.alert(e)
@@ -214,41 +214,43 @@ class App extends Component {
     //Changes the price of a house
     changePrice = (tokenId, newPrice) => {
       try{
-      let ethPrice = this.state.web3.utils.toWei(newPrice, 'Ether')
-      this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', async (hash) => {
-         this.setState({hash: hash, action: 'Changed Price', trxStatus: 'Pending'})
-         this.showNotification()
+          let ethPrice = this.state.web3.utils.toWei(newPrice, 'Ether')
+          this.state.houseToken.methods.changePrice(tokenId, ethPrice).send({ from: this.state.account }).on('transactionHash', async (hash) => {
+            this.setState({hash: hash, action: 'Changed Price', trxStatus: 'Pending'})
+            this.showNotification()
 
-        this.state.houseToken.events.changedPrice({}, async (error, event) => {
-          await this.loadAccountData()
-          await this.updateHouses()
-      })
-        }).on('receipt', async (receipt) => {
-            if(receipt.status === true){
-              this.setState({trxStatus: 'Success'})
-            }
-            else if(receipt.status === false){
-              this.setState({trxStatus: 'Failed'})
-            }
-        }).on('error', (error) => {
-            window.alert('Error! Could not change house price!')
-        }).on('confirmation', (confirmNum) => {
-            if(confirmNum > 10) {
-              this.setState({confirmNum : '10+'})
-            } else{
-            this.setState({confirmNum})
-            }
-        })
+            this.state.houseToken.events.changedPrice({}, async (error, event) => {
+              await this.loadAccountData()
+              await this.updateHouses()
+          })
+            }).on('receipt', async (receipt) => {
+                if(receipt.status === true){
+                  this.setState({trxStatus: 'Success'})
+                }
+                else if(receipt.status === false){
+                  this.setState({trxStatus: 'Failed'})
+                }
+            }).on('error', (error) => {
+                window.alert('Error! Could not change house price!')
+            }).on('confirmation', (confirmNum) => {
+                if(confirmNum > 10) {
+                  this.setState({confirmNum : '10+'})
+                } else{
+                this.setState({confirmNum})
+                }
+            })
       }
       catch(e) {
         window.alert(e)
       }
     }
 
+    //Shows the notification
     showNotification = () => {
       this.notificationOne.current.updateShowNotify()
     }
 
+    //Sets the state of the filtered houses
     filterHouses = async (filteredHouseList) => {
       await this.setState({filteredHouseList})
     }
@@ -281,10 +283,12 @@ render() {
 
 if(window.ethereum != null) {
 
+    //Reload window on network change
     window.ethereum.on('chainChanged', async (chainId) => {
       window.location.reload()
     })
-
+    
+    //Load new account and house data
     window.ethereum.on('accountsChanged', async (accounts) => {
       if(typeof accounts[0] !== 'undefined' & accounts[0] !== null) {
         await this.loadAccountData()
@@ -298,7 +302,6 @@ if(window.ethereum != null) {
 
     return (
       <div className='App'>
-        
         <Navbar 
           account={this.state.account}
           currentBalance={this.state.houseTokenBalance}
@@ -328,36 +331,36 @@ if(window.ethereum != null) {
             trxStatus={this.state.trxStatus}
             confirmNum={this.state.confirmNum}
           />
-          <div className='row mt-1'></div>
+          <div className='row mt-1' />
           <h1 className='mt-2' id='title'>House Tokens</h1>
           
           {this.state.isConnected ?
           <>
-          <MintHouse
-            account={this.state.account}
-            admin={this.state.admin}
-            mintHouse={this.mintHouse}
-          />
-
-          <hr/>
-          <div className='row justify-content-center'>
-            <SendHouse
+            <MintHouse
               account={this.state.account}
-              houseTokenBalance = {this.state.houseTokenBalance}
-              houseTokenList = {this.state.houseTokenList}
-              sendTokens = {this.sendTokens}
+              admin={this.state.admin}
+              mintHouse={this.mintHouse}
             />
 
-            <div className='col-lg-6 mr-4'>
-              <h2 className='mb-4'>Your Houses <img src={houselogo} width='60' height='60' alt='house logo' /></h2>
-              <HouseTable
+            <hr/>
+            <div className='row justify-content-center'>
+              <SendHouse
                 account={this.state.account}
-                houseTokenList={this.state.houseTokenList}
-                web3={this.state.web3}
+                houseTokenBalance = {this.state.houseTokenBalance}
+                houseTokenList = {this.state.houseTokenList}
+                sendTokens = {this.sendTokens}
               />
+
+              <div className='col-lg-6 mr-4'>
+                <h2 className='mb-4'>Your Houses <img src={houselogo} width='60' height='60' alt='house logo' /></h2>
+                <HouseTable
+                  account={this.state.account}
+                  houseTokenList={this.state.houseTokenList}
+                  web3={this.state.web3}
+                />
+              </div>
             </div>
-          </div>
-          <hr/>
+            <hr/>
           </>
           : null
           }
@@ -375,14 +378,9 @@ if(window.ethereum != null) {
           <div className='row justify-content-left'>
             <span className='ml-3'>Contract on Etherscan.io: </span> <a href={`https://ropsten.etherscan.io/address/${this.state.contractAddress}`} className='ml-1' target='_blank' rel='noopener noreferrer'>Contract</a>
           </div>
-          </>
-
-          
-
-          
-  }
-              
-      </div>
+          </>         
+    }        
+    </div>
     );
   }
 }

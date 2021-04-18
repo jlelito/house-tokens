@@ -21,9 +21,10 @@ const IMAGES_ARRAY = [
   
 ]
 
-
+/*Component for all the house cards */
 class Main extends Component {
 
+  //Sort houses on component mount and paginate
   componentDidMount() {
     this.sortHouses('squareFt')
     this.paginate.current.paginate(1)
@@ -34,6 +35,7 @@ class Main extends Component {
     this.paginate = React.createRef()
   }
 
+  //Change house image based on square feet 
   chooseImage = (sqFeet) => {
     if(sqFeet <= 500){
       return IMAGES_ARRAY[0].img
@@ -237,7 +239,6 @@ class Main extends Component {
             </div>
           </div>
         </form>
-          
           
             <div className='form-group row float-right'>
               <div className='col-12 mr-5'>

@@ -1,6 +1,7 @@
 import { Box, Modal, Button, Text, Card, Heading, EthAddress, Icon } from 'rimble-ui';
 import React, { Component,  } from 'react';
 
+/* Component for Account Modal on Navbar */
 class AccountModal extends Component {
 
     constructor(props){
@@ -10,12 +11,13 @@ class AccountModal extends Component {
         }
     }
 
-  
+    /*Closes the Modal */
     closeModal = e => {
       e.preventDefault()
       this.setState({isOpen: false})
     }
-  
+    
+    /*Opens the Modal */
     openModal = e => {
       e.preventDefault()
       this.setState({isOpen: true})

@@ -7,8 +7,7 @@ import  { Pill }  from '../../node_modules/rimble-ui';
 import AccountModal from '../components/AccountModal.js';
 import Loader from 'react-loader-spinner';
 
-
-
+/* Component for top Navbar */
 class Navbar extends Component {
 
   connectWallet() {

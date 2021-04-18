@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import Identicon from 'identicon.js';
 import ethlogo from '../src_images/ETH.png';
 
-
+/* Component for the House Table */
 class HouseTable extends Component {
 
-
 render() {
-    
         return (
             <table className='table table-striped table-hover mx-5'>
-            <caption>Owned Houses</caption>
+              <caption>Owned Houses</caption>
               <thead className='thead-light'>
                 <tr>
                   <th>House ID</th>
@@ -47,7 +45,7 @@ render() {
                   ) : null}
                   </tr>
                   ))}
-                  </tbody>
+                </tbody>
             </table>
         );
 }

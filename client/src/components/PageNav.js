@@ -1,5 +1,6 @@
 import React from 'react';
 
+/* Component for Pagination */
 const PageNav = ({postsPerPage, totalPosts, paginate, currentPage}) => {
 
     const pageNumbers = []
@@ -11,25 +12,22 @@ const PageNav = ({postsPerPage, totalPosts, paginate, currentPage}) => {
     return (
         <nav id='page-navbar'>
             <ul className='pagination justify-content-center'>
-                
                 {pageNumbers.map(number => (
-                    
-                        <React.Fragment key={number}>
-                            {currentPage === number ? 
-                                <li key={number} className='page-item active'>
-                                    <button onClick={() => paginate(number)} className='page-link'>
-                                        {number}
-                                    </button>
-                                </li> 
-                                : 
-                                <li key={number} className='page-item'>
-                                    <button onClick={() => paginate(number)} className='page-link'>
-                                        {number}
-                                    </button>
-                                </li>
-                            }
-                        </React.Fragment>
-                    
+                    <React.Fragment key={number}>
+                        {currentPage === number ? 
+                            <li key={number} className='page-item active'>
+                                <button onClick={() => paginate(number)} className='page-link'>
+                                    {number}
+                                </button>
+                            </li> 
+                            : 
+                            <li key={number} className='page-item'>
+                                <button onClick={() => paginate(number)} className='page-link'>
+                                    {number}
+                                </button>
+                            </li>
+                        }
+                    </React.Fragment>
                 ))}  
             </ul>
         </nav>

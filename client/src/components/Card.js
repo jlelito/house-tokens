@@ -20,8 +20,10 @@ const IMAGES_ARRAY = [
     
   ]
 
+/* Component for House Cards */
 class Card extends Component {
 
+    //Change image based on square feet
     chooseImage = (sqFeet) => {
       if(sqFeet <= 500){
         return IMAGES_ARRAY[0].img
@@ -36,6 +38,7 @@ class Card extends Component {
       
     }
 
+    //Connects the user's wallet
     connectWallet() {
       window.ethereum.request({ method: 'eth_requestAccounts' });
     }

@@ -4,9 +4,7 @@ import Loader from 'react-loader-spinner'
 import checkmark from '../src_images/checkmark.png';
 import xmark from '../src_images/xmark.png';
 
-
-
-
+/* Component for Notification */
 class Notification extends Component {
 
     updateShowNotify = () => this.setState({showA: true});
@@ -29,38 +27,37 @@ class Notification extends Component {
                 </Toast.Header>
                 
                 <Toast.Body>
-                <div className='row justify-content-center'>
-                    <div className='col-12'>
-                        <div><b>{this.props.action}</b></div>
-                        <div className='row justify-content-center'>
-                            Status of Transaction:
-                            {this.props.trxStatus === 'Pending' ? 
-                                <>
-                                <div className='text-muted ml-2'>Pending</div>
-                                <Loader 
-                                    className='ml-2'
-                                    type='Oval'
-                                    color='#00BFFF'
-                                    height={15}
-                                    width={15}
-                                /> 
-                                </>
-                                :   
-                                <>
-                                {this.props.trxStatus === 'Success' ? <><b className='text-success ml-2'>Success</b> <img src={checkmark} className='float-left ml-2' height='15' width='15' alt='checkmark'/> </> : 
-                                    <>{this.props.trxStatus === 'Failed' ? <> <b className='text-danger ml-2'>Failed</b> <img src={xmark} className='float-left ml-2' height='15' width='15' alt='xmark'/> </> : null}</>
+                    <div className='row justify-content-center'>
+                        <div className='col-12'>
+                            <div><b>{this.props.action}</b></div>
+                            <div className='row justify-content-center'>
+                                Status of Transaction:
+                                {this.props.trxStatus === 'Pending' ? 
+                                    <>
+                                        <div className='text-muted ml-2'>Pending</div>
+                                        <Loader 
+                                            className='ml-2'
+                                            type='Oval'
+                                            color='#00BFFF'
+                                            height={15}
+                                            width={15}
+                                        /> 
+                                    </>
+                                    :   
+                                    <>
+                                    {this.props.trxStatus === 'Success' ? <><b className='text-success ml-2'>Success</b> <img src={checkmark} className='float-left ml-2' height='15' width='15' alt='checkmark'/> </> : 
+                                        <>{this.props.trxStatus === 'Failed' ? <> <b className='text-danger ml-2'>Failed</b> <img src={xmark} className='float-left ml-2' height='15' width='15' alt='xmark'/> </> : null}</>
+                                    }
+                                    </>
                                 }
-                                </>
-                            }
+                            </div>
+                            Transaction:
+                            <a className='ml-2' href={`https://ropsten.etherscan.io/tx/${this.props.hash}`} target='_blank' rel='noopener noreferrer'>
+                                Etherscan.io
+                            </a>
+                            <div>Confirmations: {this.props.confirmNum}</div>                      
                         </div>
-                        Transaction:
-                        <a className='ml-2' href={`https://ropsten.etherscan.io/tx/${this.props.hash}`} target='_blank' rel='noopener noreferrer'>
-                            Etherscan.io
-                        </a>
-                        <div>Confirmations: {this.props.confirmNum}</div>
-                        
                     </div>
-                </div>
                 </Toast.Body>
             </Toast>  
         </div>
